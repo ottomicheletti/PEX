@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "448494112107",
+    "project_id": "pex-agpop",
+    "storage_bucket": "pex-agpop.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:448494112107:android:26f6c7a33d1396cbd0902e",
+        "android_client_info": {
+          "package_name": "com.catolica.agpop"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIEY0AE1hai5LG-Z61SRKmXDmxbNUXHKM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:448494112107:android:beb84489a81cfa0cd0902e",
+        "android_client_info": {
+          "package_name": "com.example.pex"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIEY0AE1hai5LG-Z61SRKmXDmxbNUXHKM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
