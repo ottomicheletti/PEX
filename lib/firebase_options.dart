@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
-import 'package:flutter/foundation.dart' show defaultTargetPlatform, kIsWeb, TargetPlatform;
+import 'package:flutter/foundation.dart'
+    show defaultTargetPlatform, kIsWeb, TargetPlatform;
 
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
@@ -38,7 +39,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCIEY0AE1hai5LG-Z61SRKmXDmxbNUXHKM',
-    appId: '1:448494112107:android:26f6c7a33d1396cbd0902e',
+    appId: '1:448494112107:android:beb84489a81cfa0cd0902e',
     messagingSenderId: '448494112107',
     projectId: 'pex-agpop',
     storageBucket: 'pex-agpop.firebasestorage.app',
@@ -46,10 +47,10 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyC0zM4D4_5RHtTcCnOFWuDzKrNZLGRUzvA',
-    appId: '1:448494112107:ios:a764760cdfb96617d0902e',
+    appId: '1:448494112107:ios:43f6a5c176f1f7d0d0902e',
     messagingSenderId: '448494112107',
     projectId: 'pex-agpop',
     storageBucket: 'pex-agpop.firebasestorage.app',
-    iosBundleId: 'com.catolica.agpop',
+    iosBundleId: 'com.example.pex',
   );
 }

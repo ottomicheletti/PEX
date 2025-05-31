@@ -1,12 +1,12 @@
+import 'package:flutter/material.dart';
+import 'package:agpop/main.dart';
 import 'package:agpop/models/user_model.dart';
-import 'package:agpop/repositories/user_repository.dart';
 import 'package:agpop/routes.dart';
-import 'package:agpop/screens/home/admin_home_screen.dart';
-import 'package:agpop/screens/home/employee_home_screen.dart';
-import 'package:agpop/services/auth_service.dart';
+import 'package:agpop/screens/home/employee_home.dart';
+import 'package:agpop/screens/home/admin_home.dart';
 import 'package:agpop/theme/app_theme.dart';
 import 'package:agpop/widgets/loading_indicator.dart';
-import 'package:flutter/material.dart';
+import 'package:agpop/services/firebase_service.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -17,8 +17,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final _userRepository = UserRepository();
-  final _authService = AuthService();
+  final _firebaseService = FirebaseService();
   UserModel? _currentUser;
   bool _isLoading = true;
 
@@ -30,15 +29,35 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _loadUserData() async {
     try {
-      final userId = _authService.getCurrentUser()?.uid;
+      final userId = auth.currentUser?.uid;
       if (userId == null) {
         _handleAuthError();
         return;
       }
 
-      final user = await _userRepository.getById(userId);
-
-      if (user != null) {
+      final user = await _firebaseService.getUserById(userId);
+      
+      if (user == null) {
+        // Usuário autenticado mas sem perfil no Firestore
+        // Criar perfil básico
+        final newUser = UserModel(
+          id: userId,
+          name: auth.currentUser?.displayName ?? 'Usuário',
+          email: auth.currentUser?.email ?? '',
+          role: UserRole.employee, // Padrão é funcionário
+          isActive: true,
+          positionIds: [],
+        );
+        
+        await _firebaseService.createUser(newUser);
+        
+        if (mounted) {
+          setState(() {
+            _currentUser = newUser;
+            _isLoading = false;
+          });
+        }
+      } else {
         if (mounted) {
           setState(() {
             _currentUser = user;
@@ -50,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error loading user data: ${error.toString()}'),
+            content: Text('Erro ao carregar dados: ${error.toString()}'),
             backgroundColor: AppTheme.errorColor,
           ),
         );
@@ -59,20 +78,17 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void _handleAuthError() async {
-    await _authService.signOut(); // Use AuthService for sign out
+  void _handleAuthError() {
+    auth.signOut();
     if (mounted) {
       Navigator.of(context).pushReplacementNamed(AppRoutes.login);
     }
   }
 
   Future<void> _signOut() async {
-    await _authService.signOut(); // Use AuthService for sign out
+    await auth.signOut();
     if (mounted) {
-      // The StreamBuilder in main.dart will automatically redirect to LoginScreen
-      // so we don't need `Navigator.pushReplacementNamed(AppRoutes.login);` here.
-      // Simply popping current routes to ensure clean state
-      Navigator.of(context).popUntil((route) => route.isFirst);
+      Navigator.of(context).pushReplacementNamed(AppRoutes.login);
     }
   }
 
@@ -84,37 +100,33 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
 
+    // Verifica o perfil do usuário e exibe a tela correspondente
     final isAdmin = _currentUser?.role == UserRole.admin;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(isAdmin ? 'Admin Panel' : 'My Tasks'),
+        title: Text(isAdmin ? 'Painel Administrativo' : 'Minhas Tarefas'),
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_outlined),
             onPressed: () {
-              // Notifications will be implemented here
-              debugPrint('Notifications tapped');
+              // Implementar visualização de notificações
             },
           ),
           PopupMenuButton(
             icon: CircleAvatar(
-                backgroundImage: null, // Placeholder, would use user.photoURL
-                child: Text(_currentUser!.name.isNotEmpty
-                    ? _currentUser!.name.substring(0, 1).toUpperCase()
-                    : 'U' // Default for empty name
-                )
+              backgroundImage: null,
+              child: Text(_currentUser!.name.substring(0, 1).toUpperCase())
             ),
             itemBuilder: (context) => [
               PopupMenuItem(
-                child: const Text('My Profile'),
+                child: const Text('Meu Perfil'),
                 onTap: () {
-                  // Profile view will be implemented here
-                  debugPrint('My Profile tapped');
+                  // Implementar visualização de perfil
                 },
               ),
               PopupMenuItem(
-                child: const Text('Sign Out'),
+                child: const Text('Sair'),
                 onTap: _signOut,
               ),
             ],
