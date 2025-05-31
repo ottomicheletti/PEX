@@ -3,12 +3,12 @@ class Validators {
     if (value == null || value.isEmpty) {
       return 'Por favor, informe seu e-mail';
     }
-
+    
     final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
     if (!emailRegex.hasMatch(value)) {
       return 'Por favor, informe um e-mail válido';
     }
-
+    
     return null;
   }
 
@@ -16,11 +16,11 @@ class Validators {
     if (value == null || value.isEmpty) {
       return 'Por favor, informe sua senha';
     }
-
+    
     if (value.length < 6) {
       return 'A senha deve ter pelo menos 6 caracteres';
     }
-
+    
     return null;
   }
 
@@ -28,7 +28,29 @@ class Validators {
     if (value == null || value.isEmpty) {
       return 'Por favor, informe $fieldName';
     }
+    
+    return null;
+  }
 
+  static String? validateCPF(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Por favor, informe seu CPF';
+    }
+    
+    // Remover caracteres não numéricos
+    final cpf = value.replaceAll(RegExp(r'[^\d]'), '');
+    
+    if (cpf.length != 11) {
+      return 'CPF inválido';
+    }
+    
+    // Verificar se todos os dígitos são iguais
+    if (RegExp(r'^(\d)\1*$').hasMatch(cpf)) {
+      return 'CPF inválido';
+    }
+    
+    // Implementar validação completa de CPF se necessário
+    
     return null;
   }
 }

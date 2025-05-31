@@ -35,23 +35,23 @@ class CustomButton extends StatelessWidget {
       ),
       child: isLoading
           ? const SizedBox(
-        width: 24,
-        height: 24,
-        child: CircularProgressIndicator(
-          color: Colors.white,
-          strokeWidth: 2,
-        ),
-      )
+              width: 24,
+              height: 24,
+              child: CircularProgressIndicator(
+                color: Colors.white,
+                strokeWidth: 2,
+              ),
+            )
           : icon != null
-          ? Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon),
-          const SizedBox(width: 8),
-          Text(text),
-        ],
-      )
-          : Text(text),
+              ? Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(icon),
+                    const SizedBox(width: 8),
+                    Text(text),
+                  ],
+                )
+              : Text(text),
     );
   }
 }
