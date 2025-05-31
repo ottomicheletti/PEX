@@ -191,8 +191,8 @@ class _TaskScreenState extends State<TaskScreen> with SingleTickerProviderStateM
         title: const Text('Gerenciar Tarefas'),
         bottom: TabBar(
           controller: _tabController,
-          labelColor: AppTheme.primaryColor, // Cor para a aba selecionada
-          unselectedLabelColor: Colors.grey.shade700, // Cor para as abas não selecionadas (mais visível)
+          labelColor: AppTheme.accentColor, // Cor para a aba selecionada
+          unselectedLabelColor: Colors.white, // Cor para as abas não selecionadas (mais visível)
           indicatorColor: AppTheme.primaryColor,
           isScrollable: true,
           tabs: const [
