@@ -1,3 +1,4 @@
+import 'package:agpop/models/task_model.dart';
 import 'package:flutter/material.dart';
 import 'package:agpop/models/user_model.dart';
 import 'package:agpop/repositories/position_repository.dart';
@@ -145,7 +146,10 @@ class _AdminHomeState extends State<AdminHome> {
                     color: AppTheme.pendingColor,
                     onTap: () {
                       // Implementar filtro de tarefas pendentes
-                      Navigator.of(context).pushNamed(AppRoutes.tasks);
+                      Navigator.of(context).pushNamed(
+                        AppRoutes.tasks,
+                        arguments: TaskStatus.pending.name
+                      );
                     },
                   ),
                 ),

@@ -13,7 +13,7 @@ class AppRoutes {
   static const String resetPassword = '/reset-password';
   static const String home = '/home';
   static const String positions = '/admin/positions';
-  static const String tasks = '/admin/tasks';
+  static const String tasks = '/admin/tasks'; // This is your tasks route
   static const String users = '/admin/users';
 
   static Map<String, WidgetBuilder> get routes => {
@@ -22,7 +22,10 @@ class AppRoutes {
     resetPassword: (context) => const ResetPasswordScreen(),
     home: (context) => const HomeScreen(),
     positions: (context) => const PositionScreen(),
-    tasks: (context) => const TaskScreen(),
+    tasks: (context) {
+      final initialTab = ModalRoute.of(context)?.settings.arguments as String?;
+      return TaskScreen(initialTab: initialTab);
+    },
     users: (context) => const UserScreen(),
   };
 }

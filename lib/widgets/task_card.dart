@@ -161,14 +161,37 @@ class TaskCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Wrap(
-                    spacing: 6.0,
-                    runSpacing: 6.0,
-                    children: assignedPositions.map((position) => Chip(
-                      label: Text(position.name),
+                  ChipTheme(
+                    data: ChipThemeData.fromDefaults(
+                      brightness: Brightness.light,
+                      secondaryColor: AppTheme.secondaryColor,
+                      labelStyle: TextStyle(
+                        color: AppTheme.secondaryColor,
+                        fontSize: 16.0,
+                      ),
+                    ).copyWith(
                       backgroundColor: AppTheme.secondaryColor.withOpacity(0.1),
-                      labelStyle: TextStyle(color: AppTheme.secondaryColor),
-                    )).toList(),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)
+                      ),
+                      side: BorderSide.none, // Extra segurança
+                    ),
+                    child: Wrap(
+                      spacing: 8.0,
+                      runSpacing: 8.0,
+                      children: assignedPositions.map(
+                            (position) => Chip(
+                          label: Text(position.name,
+                          style: TextStyle(color: AppTheme.secondaryColor),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            side: BorderSide.none, // Ref ref: sem borda
+                          ),
+                          backgroundColor: AppTheme.secondaryColor.withOpacity(0.1),
+                        ),
+                      ).toList(),
+                    ),
                   ),
                   const SizedBox(height: 16),
                 ],
@@ -178,24 +201,31 @@ class TaskCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     if (onStatusChanged != null && task.status != TaskStatus.completed) ...[
-                      OutlinedButton.icon(
+                      TextButton.icon(
                         icon: Icon(
-                          task.status == TaskStatus.pending
-                              ? Icons.play_arrow
-                              : Icons.check,
+                          task.status == TaskStatus.pending ? Icons.play_arrow : Icons.check,
                           color: task.status == TaskStatus.pending
                               ? AppTheme.startedColor
                               : AppTheme.completedColor,
                         ),
                         label: Text(
-                          task.status == TaskStatus.pending
-                              ? 'Iniciar'
-                              : 'Concluir',
+                          task.status == TaskStatus.pending ? 'Iniciar' : 'Concluir',
                           style: TextStyle(
                             color: task.status == TaskStatus.pending
                                 ? AppTheme.startedColor
                                 : AppTheme.completedColor,
                           ),
+                        ),
+                        style: TextButton.styleFrom(
+                          backgroundColor: (task.status == TaskStatus.pending
+                              ? AppTheme.startedColor
+                              : AppTheme.completedColor)
+                              .withOpacity(0.1), // Cor de fundo com opacidade
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20), // Arredondado
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          foregroundColor: Colors.transparent, // Sem ripple visível
                         ),
                         onPressed: () {
                           onStatusChanged!(

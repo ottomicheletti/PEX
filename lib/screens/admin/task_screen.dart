@@ -10,7 +10,11 @@ import 'package:agpop/widgets/task_card.dart';
 import 'package:agpop/screens/admin/task_form_screen.dart';
 
 class TaskScreen extends StatefulWidget {
-  const TaskScreen({super.key});
+  final String? initialTab;
+  const TaskScreen({
+    super.key,
+    this.initialTab
+  });
 
   @override
   State<TaskScreen> createState() => _TaskScreenState();
@@ -28,7 +32,26 @@ class _TaskScreenState extends State<TaskScreen> with SingleTickerProviderStateM
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    super.initState();
+    int initialIndex = 0;
+    if (widget.initialTab != null) {
+      // Mapeia o nome do status para o índice da aba
+      switch (widget.initialTab) {
+        case 'pending':
+          initialIndex = 1;
+          break;
+        case 'started':
+          initialIndex = 2;
+          break;
+        case 'completed':
+          initialIndex = 3;
+          break;
+        case 'all':
+          initialIndex = 0;
+          break;
+      }
+    }
+    _tabController = TabController(length: 4, vsync: this, initialIndex: initialIndex);
     _loadData();
   }
 
