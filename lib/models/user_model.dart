@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum UserRole { admin, employee }
@@ -17,7 +16,7 @@ class UserModel {
     required this.email,
     required this.role,
     required this.isActive,
-    required this.positionIds,
+    required this.positionIds
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -36,7 +35,7 @@ class UserModel {
       email: json['email'] ?? '',
       role: json['role'] == 'admin' ? UserRole.admin : UserRole.employee,
       isActive: json['is_active'] ?? true,
-      positionIds: positions,
+      positionIds: positions
     );
   }
 
@@ -48,7 +47,7 @@ class UserModel {
       email: data['email'] ?? '',
       role: data['role'] == 'admin' ? UserRole.admin : UserRole.employee,
       isActive: data['is_active'] ?? true,
-      positionIds: List<String>.from(data['position_ids'] ?? []),
+      positionIds: List<String>.from(data['position_ids'] ?? [])
     );
   }
 
@@ -58,7 +57,7 @@ class UserModel {
       'name': name,
       'email': email,
       'role': role == UserRole.admin ? 'admin' : 'employee',
-      'is_active': isActive,
+      'is_active': isActive
     };
   }
 
@@ -68,7 +67,7 @@ class UserModel {
       'email': email,
       'role': role == UserRole.admin ? 'admin' : 'employee',
       'is_active': isActive,
-      'position_ids': positionIds,
+      'position_ids': positionIds
     };
   }
 
@@ -78,7 +77,7 @@ class UserModel {
     String? email,
     UserRole? role,
     bool? isActive,
-    List<String>? positionIds,
+    List<String>? positionIds
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -86,7 +85,7 @@ class UserModel {
       email: email ?? this.email,
       role: role ?? this.role,
       isActive: isActive ?? this.isActive,
-      positionIds: positionIds ?? this.positionIds,
+      positionIds: positionIds ?? this.positionIds
     );
   }
 }

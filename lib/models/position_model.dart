@@ -1,17 +1,16 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PositionModel {
   final String id;
   final String name;
   final bool isActive;
-  final int? iconCodePoint; // Added field for icon
+  final int? iconCodePoint;
 
   PositionModel({
     required this.id,
     required this.name,
     required this.isActive,
-    this.iconCodePoint, // Initialize the new field
+    this.iconCodePoint
   });
 
   factory PositionModel.fromFirestore(DocumentSnapshot doc) {
@@ -20,7 +19,7 @@ class PositionModel {
       id: doc.id,
       name: data['name'] ?? '',
       isActive: data['is_active'] ?? true,
-      iconCodePoint: data['icon_code_point'] as int?, // Retrieve the icon code point
+      iconCodePoint: data['icon_code_point'] as int?
     );
   }
 
@@ -28,7 +27,7 @@ class PositionModel {
     return {
       'name': name,
       'is_active': isActive,
-      'icon_code_point': iconCodePoint, // Add icon code point to map
+      'icon_code_point': iconCodePoint
     };
   }
 
@@ -36,13 +35,13 @@ class PositionModel {
     String? id,
     String? name,
     bool? isActive,
-    int? iconCodePoint, // Add to copyWith
+    int? iconCodePoint
   }) {
     return PositionModel(
       id: id ?? this.id,
       name: name ?? this.name,
       isActive: isActive ?? this.isActive,
-      iconCodePoint: iconCodePoint ?? this.iconCodePoint, // Assign new value
+      iconCodePoint: iconCodePoint ?? this.iconCodePoint
     );
   }
 }

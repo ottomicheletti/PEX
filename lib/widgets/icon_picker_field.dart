@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
 class IconPickerField extends StatefulWidget {
-  // Removendo initialIcon e onIconChanged para simplificar o uso dentro de um showDialog
-  // Agora, o widget simplesmente exibe uma lista de ícones e o Navigator.pop o devolverá.
   const IconPickerField({super.key});
 
   @override
@@ -10,7 +8,6 @@ class IconPickerField extends StatefulWidget {
 }
 
 class _IconPickerFieldState extends State<IconPickerField> {
-  // Uma lista de ícones comuns do Material Design
   final List<IconData> _availableIcons = const [
     Icons.work_outline,
     Icons.computer,
@@ -70,24 +67,23 @@ class _IconPickerFieldState extends State<IconPickerField> {
     Icons.terminal,
     Icons.theaters,
     Icons.vpn_key,
-    Icons.watch,
+    Icons.watch
   ];
 
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
-      shrinkWrap: true, // Para o GridView se ajustar ao tamanho do conteúdo no Dialog
+      shrinkWrap: true,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 5, // 5 ícones por linha
+        crossAxisCount: 5,
         crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
+        mainAxisSpacing: 10
       ),
       itemCount: _availableIcons.length,
       itemBuilder: (context, index) {
         final icon = _availableIcons[index];
         return InkWell(
           onTap: () {
-            // Ao tocar, retorna o ícone selecionado para quem chamou o showDialog
             Navigator.of(context).pop(icon);
           },
           borderRadius: BorderRadius.circular(8),
@@ -95,12 +91,12 @@ class _IconPickerFieldState extends State<IconPickerField> {
             decoration: BoxDecoration(
               color: Theme.of(context).cardColor,
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.grey.shade300),
+              border: Border.all(color: Colors.grey.shade300)
             ),
-            child: Icon(icon, size: 30, color: Theme.of(context).iconTheme.color),
-          ),
+            child: Icon(icon, size: 30, color: Theme.of(context).iconTheme.color)
+          )
         );
-      },
+      }
     );
   }
 }

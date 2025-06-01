@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:agpop/models/position_model.dart';
 import 'package:agpop/models/user_model.dart';
-import 'package:agpop/repositories/user_repository.dart'; // Importe o repositório
+import 'package:agpop/repositories/user_repository.dart';
 import 'package:agpop/theme/app_theme.dart';
 import 'package:agpop/widgets/custom_button.dart';
-import 'package:agpop/widgets/custom_text_field.dart'; // Importe o CustomTextField
-import 'package:agpop/widgets/loading_indicator.dart'; // Para o indicador de carregamento
+import 'package:agpop/widgets/custom_text_field.dart';
+import 'package:agpop/widgets/loading_indicator.dart';
 
 class UserFormScreen extends StatefulWidget {
-  final UserModel? user; // Opcional, para edição
+  final UserModel? user;
   final List<PositionModel> positions;
 
   const UserFormScreen({super.key, this.user, required this.positions});
@@ -19,7 +19,7 @@ class UserFormScreen extends StatefulWidget {
 
 class _UserFormScreenState extends State<UserFormScreen> {
   final _formKey = GlobalKey<FormState>();
-  final UserRepository _userRepository = UserRepository(); // Instância do repositório
+  final UserRepository _userRepository = UserRepository();
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -27,17 +27,16 @@ class _UserFormScreenState extends State<UserFormScreen> {
   UserRole _role = UserRole.employee;
   List<String> _selectedPositions = [];
 
-  bool _isSaving = false; // Estado para o botão de salvar
+  bool _isSaving = false;
 
   @override
   void initState() {
     super.initState();
-    // Se estiver editando, preencher os campos com os dados do usuário
     if (widget.user != null) {
       _nameController.text = widget.user!.name;
       _emailController.text = widget.user!.email;
       _role = widget.user!.role;
-      _selectedPositions = List.from(widget.user!.positionIds); // Clonar a lista
+      _selectedPositions = List.from(widget.user!.positionIds);
     }
   }
 
@@ -55,14 +54,13 @@ class _UserFormScreenState extends State<UserFormScreen> {
 
     try {
       if (widget.user == null) {
-        // Criar novo usuário
         final newUser = UserModel(
-          id: '', // Firestore irá gerar
+          id: '',
           name: _nameController.text.trim(),
           email: _emailController.text.trim(),
           role: _role,
-          isActive: true, // Novos usuários geralmente começam ativos
-          positionIds: _selectedPositions,
+          isActive: true,
+          positionIds: _selectedPositions
         );
         await _userRepository.add(newUser);
       } else {
@@ -70,7 +68,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
           name: _nameController.text.trim(),
           email: _emailController.text.trim(),
           role: _role,
-          positionIds: _selectedPositions,
+          positionIds: _selectedPositions
         );
         await _userRepository.update(updatedUser.id, updatedUser.toMap());
       }
@@ -79,17 +77,17 @@ class _UserFormScreenState extends State<UserFormScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(widget.user == null ? 'Usuário criado com sucesso!' : 'Usuário atualizado com sucesso!'),
-            backgroundColor: AppTheme.completedColor,
+            backgroundColor: AppTheme.completedColor
           ),
         );
-        Navigator.of(context).pop(true); // Retornar true para recarregar a lista na tela anterior
+        Navigator.of(context).pop(true);
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Erro ao salvar usuário: ${e.toString()}'),
-            backgroundColor: AppTheme.errorColor,
+            backgroundColor: AppTheme.errorColor
           ),
         );
       }
@@ -104,16 +102,16 @@ class _UserFormScreenState extends State<UserFormScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.user == null ? 'Novo Usuário' : 'Editar Usuário'),
+        title: Text(widget.user == null ? 'Novo Usuário' : 'Editar Usuário')
       ),
       body: _isSaving
-          ? const LoadingIndicator() // Usando o LoadingIndicator
+          ? const LoadingIndicator()
           : SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Form(
           key: _formKey,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start, // Alinhar texto à esquerda
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CustomTextField(
                 controller: _nameController,
@@ -121,8 +119,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
                 hint: 'Nome completo do usuário',
                 prefixIcon: Icons.person_outline,
                 validator: (value) =>
-                value == null || value.isEmpty ? 'Informe o nome' : null,
-                // onChanged já é tratado pelo controller
+                value == null || value.isEmpty ? 'Informe o nome' : null
               ),
               const SizedBox(height: 16),
 
@@ -140,8 +137,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
                     return 'E-mail inválido';
                   }
                   return null;
-                },
-                // onChanged já é tratado pelo controller
+                }
               ),
               const SizedBox(height: 16),
 
@@ -149,13 +145,13 @@ class _UserFormScreenState extends State<UserFormScreen> {
                 value: _role,
                 decoration: InputDecoration(
                   labelText: 'Perfil',
-                  prefixIcon: const Icon(Icons.security), // Ícone para perfil
+                  prefixIcon: const Icon(Icons.security),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
+                    borderSide: BorderSide.none
                   ),
                   filled: true,
-                  fillColor: Theme.of(context).inputDecorationTheme.fillColor,
+                  fillColor: Theme.of(context).inputDecorationTheme.fillColor
                 ),
                 items: UserRole.values.map((r) {
                   return DropdownMenuItem(
@@ -167,32 +163,31 @@ class _UserFormScreenState extends State<UserFormScreen> {
                   if (value != null) {
                     setState(() => _role = value);
                   }
-                },
+                }
               ),
               const SizedBox(height: 24),
 
               Text(
                 'Funções',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w600, // Ajuste de peso de fonte
-                ),
+                  fontWeight: FontWeight.w600,
+                )
               ),
               const SizedBox(height: 8),
 
-              // Lista de CheckboxListTile para seleção de múltiplas funções
               ...widget.positions.map((position) {
                 return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0), // Espaçamento entre os checkboxes
-                  child: Card( // Envolver em Card para visual mais agradável
-                    margin: EdgeInsets.zero, // Remover margem do Card
-                    elevation: 0.5, // Leve sombra
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: Card(
+                    margin: EdgeInsets.zero,
+                    elevation: 0.5,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8)
                     ),
                     color: Theme.of(context).cardColor,
                     child: CheckboxListTile(
-                      visualDensity: VisualDensity.compact, // Reduz o espaço
-                      controlAffinity: ListTileControlAffinity.leading, // Checkbox à esquerda
+                      visualDensity: VisualDensity.compact,
+                      controlAffinity: ListTileControlAffinity.leading,
                       value: _selectedPositions.contains(position.id),
                       title: Text(position.name),
                       onChanged: (checked) {
@@ -203,22 +198,22 @@ class _UserFormScreenState extends State<UserFormScreen> {
                             _selectedPositions.remove(position.id);
                           }
                         });
-                      },
-                    ),
-                  ),
+                      }
+                    )
+                  )
                 );
-              }).toList(),
+              }),
 
               const SizedBox(height: 32),
               CustomButton(
                 text: 'Salvar',
-                isLoading: _isSaving, // Usar o estado _isSaving para o botão
-                onPressed: _submitForm,
-              ),
-            ],
-          ),
-        ),
-      ),
+                isLoading: _isSaving,
+                onPressed: _submitForm
+              )
+            ]
+          )
+        )
+      )
     );
   }
 }

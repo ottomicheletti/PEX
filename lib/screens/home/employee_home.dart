@@ -12,7 +12,7 @@ class EmployeeHome extends StatefulWidget {
   
   const EmployeeHome({
     super.key,
-    required this.user,
+    required this.user
   });
 
   @override
@@ -53,8 +53,8 @@ class _EmployeeHomeState extends State<EmployeeHome> with SingleTickerProviderSt
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Erro ao carregar tarefas: ${error.toString()}'),
-            backgroundColor: AppTheme.errorColor,
-          ),
+            backgroundColor: AppTheme.errorColor
+          )
         );
         setState(() {
           _isLoading = false;
@@ -79,7 +79,6 @@ class _EmployeeHomeState extends State<EmployeeHome> with SingleTickerProviderSt
 
     return Column(
       children: [
-        // Cabeçalho com data
         Container(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -88,21 +87,20 @@ class _EmployeeHomeState extends State<EmployeeHome> with SingleTickerProviderSt
               Text(
                 formattedDate,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: AppTheme.subtitleTextColor,
-                ),
+                  color: AppTheme.subtitleTextColor
+                )
               ),
               const SizedBox(height: 4),
               Text(
                 'Suas tarefas de hoje',
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
+                  fontWeight: FontWeight.bold
+                )
+              )
+            ]
+          )
         ),
         
-        // Abas para filtrar tarefas
         TabBar(
           controller: _tabController,
           labelColor: AppTheme.primaryColor,
@@ -111,22 +109,21 @@ class _EmployeeHomeState extends State<EmployeeHome> with SingleTickerProviderSt
           tabs: const [
             Tab(text: 'Pendentes'),
             Tab(text: 'Em Andamento'),
-            Tab(text: 'Concluídas'),
-          ],
+            Tab(text: 'Concluídas')
+          ]
         ),
         
-        // Conteúdo das abas
         Expanded(
           child: TabBarView(
             controller: _tabController,
             children: [
               _buildTaskList(_getFilteredTasks(TaskStatus.pending)),
               _buildTaskList(_getFilteredTasks(TaskStatus.started)),
-              _buildTaskList(_getFilteredTasks(TaskStatus.completed)),
-            ],
-          ),
-        ),
-      ],
+              _buildTaskList(_getFilteredTasks(TaskStatus.completed))
+            ]
+          )
+        )
+      ]
     );
   }
 
@@ -139,18 +136,18 @@ class _EmployeeHomeState extends State<EmployeeHome> with SingleTickerProviderSt
             Icon(
               Icons.task_alt,
               size: 64,
-              color: AppTheme.subtitleTextColor.withOpacity(0.5),
+              color: AppTheme.subtitleTextColor.withOpacity(0.5)
             ),
             const SizedBox(height: 16),
             Text(
               'Nenhuma tarefa encontrada',
               style: TextStyle(
                 color: AppTheme.subtitleTextColor,
-                fontSize: 16,
-              ),
-            ),
-          ],
-        ),
+                fontSize: 16
+              )
+            )
+          ]
+        )
       );
     }
 
@@ -175,15 +172,15 @@ class _EmployeeHomeState extends State<EmployeeHome> with SingleTickerProviderSt
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text('Erro ao atualizar tarefa: ${error.toString()}'),
-                      backgroundColor: AppTheme.errorColor,
-                    ),
+                      backgroundColor: AppTheme.errorColor
+                    )
                   );
                 }
               }
-            },
+            }
           );
-        },
-      ),
+        }
+      )
     );
   }
 }

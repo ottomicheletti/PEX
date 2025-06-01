@@ -44,9 +44,9 @@ class _HomeScreenState extends State<HomeScreen> {
           id: userId,
           name: auth.currentUser?.displayName ?? 'Usuário',
           email: auth.currentUser?.email ?? '',
-          role: UserRole.employee, // Padrão é funcionário
+          role: UserRole.employee,
           isActive: true,
-          positionIds: [],
+          positionIds: []
         );
         
         await _firebaseService.createUser(newUser);
@@ -70,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Erro ao carregar dados: ${error.toString()}'),
-            backgroundColor: AppTheme.errorColor,
+            backgroundColor: AppTheme.errorColor
           ),
         );
         _handleAuthError();
@@ -96,11 +96,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     if (_isLoading) {
       return const Scaffold(
-        body: LoadingIndicator(),
+        body: LoadingIndicator()
       );
     }
 
-    // Verifica o perfil do usuário e exibe a tela correspondente
     final isAdmin = _currentUser?.role == UserRole.admin;
 
     return Scaffold(
@@ -110,8 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             icon: const Icon(Icons.notifications_outlined),
             onPressed: () {
-              // Implementar visualização de notificações
-            },
+            }
           ),
           PopupMenuButton(
             icon: CircleAvatar(
@@ -123,19 +121,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: const Text('Meu Perfil'),
                 onTap: () {
                   // Implementar visualização de perfil
-                },
+                }
               ),
               PopupMenuItem(
-                child: const Text('Sair'),
                 onTap: _signOut,
-              ),
-            ],
-          ),
-        ],
+                child: const Text('Sair')
+              )
+            ]
+          )
+        ]
       ),
       body: isAdmin
           ? AdminHome(user: _currentUser!)
-          : EmployeeHome(user: _currentUser!),
+          : EmployeeHome(user: _currentUser!)
     );
   }
 }

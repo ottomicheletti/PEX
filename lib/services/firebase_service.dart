@@ -120,7 +120,6 @@ class FirebaseService {
       for (var doc in snapshot.docs) {
         final task = TaskModel.fromFirestore(doc);
         
-        // Buscar usuários associados
         final userTasksSnapshot = await taskUsersRef
             .where('task_id', isEqualTo: task.id)
             .get();
@@ -129,7 +128,6 @@ class FirebaseService {
             .map((doc) => doc['user_id'] as String)
             .toList();
         
-        // Buscar posições associadas
         final positionTasksSnapshot = await taskPositionsRef
             .where('task_id', isEqualTo: task.id)
             .get();
@@ -152,7 +150,6 @@ class FirebaseService {
 
   Future<List<TaskModel>> getTasksForUser(String userId) async {
     try {
-      // Buscar IDs de tarefas associadas ao usuário
       final userTasksSnapshot = await taskUsersRef
           .where('user_id', isEqualTo: userId)
           .get();
@@ -165,7 +162,6 @@ class FirebaseService {
         return [];
       }
       
-      // Buscar tarefas por IDs
       List<TaskModel> tasks = [];
       
       for (var taskId in taskIds) {
@@ -187,19 +183,17 @@ class FirebaseService {
       final taskId = docRef.id;
       await tasksRef.doc(taskId).update({'id': taskId});
       
-      // Associar usuários
       for (var userId in task.assignedUserIds) {
         await taskUsersRef.add({
           'task_id': taskId,
-          'user_id': userId,
+          'user_id': userId
         });
       }
       
-      // Associar posições
       for (var positionId in task.assignedPositionIds) {
         await taskPositionsRef.add({
           'task_id': taskId,
-          'position_id': positionId,
+          'position_id': positionId
         });
       }
       
@@ -213,39 +207,33 @@ class FirebaseService {
     try {
       await tasksRef.doc(task.id).update(task.toMap());
       
-      // Atualizar associações de usuários
       final userTasksSnapshot = await taskUsersRef
           .where('task_id', isEqualTo: task.id)
           .get();
       
-      // Remover associações existentes
       for (var doc in userTasksSnapshot.docs) {
         await doc.reference.delete();
       }
       
-      // Adicionar novas associações
       for (var userId in task.assignedUserIds) {
         await taskUsersRef.add({
           'task_id': task.id,
-          'user_id': userId,
+          'user_id': userId
         });
       }
       
-      // Atualizar associações de posições
       final positionTasksSnapshot = await taskPositionsRef
           .where('task_id', isEqualTo: task.id)
           .get();
       
-      // Remover associações existentes
       for (var doc in positionTasksSnapshot.docs) {
         await doc.reference.delete();
       }
       
-      // Adicionar novas associações
       for (var positionId in task.assignedPositionIds) {
         await taskPositionsRef.add({
           'task_id': task.id,
-          'position_id': positionId,
+          'position_id': positionId
         });
       }
     } catch (e) {
@@ -259,7 +247,7 @@ class FirebaseService {
       final data = taskDoc.data() as Map<String, dynamic>?;
 
       final updateData = <String, dynamic>{
-        'status': status.name,
+        'status': status.name
       };
 
       final startAt = data?['start_at'];
@@ -283,7 +271,6 @@ class FirebaseService {
 
   Future<void> deleteTask(String taskId) async {
     try {
-      // Remover associações de usuários
       final userTasksSnapshot = await taskUsersRef
           .where('task_id', isEqualTo: taskId)
           .get();
@@ -292,7 +279,6 @@ class FirebaseService {
         await doc.reference.delete();
       }
       
-      // Remover associações de posições
       final positionTasksSnapshot = await taskPositionsRef
           .where('task_id', isEqualTo: taskId)
           .get();
@@ -301,14 +287,12 @@ class FirebaseService {
         await doc.reference.delete();
       }
       
-      // Remover a tarefa
       await tasksRef.doc(taskId).delete();
     } catch (e) {
       rethrow;
     }
   }
 
-  // Métodos para associações usuário-posição
   Future<List<String>> getPositionsForUser(String userId) async {
     try {
       final snapshot = await userPositionsRef
@@ -327,7 +311,7 @@ class FirebaseService {
     try {
       await userPositionsRef.add({
         'user_id': userId,
-        'position_id': positionId,
+        'position_id': positionId
       });
     } catch (e) {
       rethrow;
@@ -349,7 +333,6 @@ class FirebaseService {
     }
   }
 
-  // Métodos para armazenamento
   Future<String> uploadFile(String path, dynamic file) async {
     try {
       final ref = _storage.ref().child(path);

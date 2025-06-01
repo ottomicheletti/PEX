@@ -7,14 +7,13 @@ class EmployeeHome extends StatelessWidget {
 
   const EmployeeHome({
     super.key,
-    required this.user,
+    required this.user
   });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Header with user's name
         Container(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -23,20 +22,19 @@ class EmployeeHome extends StatelessWidget {
               Text(
                 'Hello, ${user.name}!',
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                  fontWeight: FontWeight.bold
+                )
               ),
               const SizedBox(height: 4),
               Text(
                 'Your tasks overview',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: AppTheme.subtitleTextColor,
-                ),
-              ),
-            ],
-          ),
+                  color: AppTheme.subtitleTextColor
+                )
+              )
+            ]
+          )
         ),
-        // Placeholder for task tabs or list
         Expanded(
           child: Center(
             child: Column(
@@ -45,21 +43,21 @@ class EmployeeHome extends StatelessWidget {
                 Icon(
                   Icons.assignment,
                   size: 64,
-                  color: AppTheme.subtitleTextColor.withOpacity(0.5),
+                  color: AppTheme.subtitleTextColor.withOpacity(0.5)
                 ),
                 const SizedBox(height: 16),
                 Text(
                   'Your tasks will appear here.',
                   style: TextStyle(
                     color: AppTheme.subtitleTextColor,
-                    fontSize: 16,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
+                    fontSize: 16
+                  )
+                )
+              ]
+            )
+          )
+        )
+      ]
     );
   }
 }

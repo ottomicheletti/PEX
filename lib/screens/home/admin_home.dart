@@ -13,7 +13,7 @@ class AdminHome extends StatefulWidget {
   
   const AdminHome({
     super.key,
-    required this.user,
+    required this.user
   });
 
   @override
@@ -61,7 +61,7 @@ class _AdminHomeState extends State<AdminHome> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Erro ao carregar dados: ${error.toString()}'),
-            backgroundColor: AppTheme.errorColor,
+            backgroundColor: AppTheme.errorColor
           ),
         );
         setState(() {
@@ -80,19 +80,18 @@ class _AdminHomeState extends State<AdminHome> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Cabeçalho
             Text(
               'Bem-vindo, ${widget.user.name}',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                fontWeight: FontWeight.bold
+              )
             ),
             const SizedBox(height: 8),
             Text(
               'Gerencie sua equipe e tarefas',
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: AppTheme.subtitleTextColor,
-              ),
+                color: AppTheme.subtitleTextColor
+              )
             ),
             const SizedBox(height: 24),
 
@@ -106,8 +105,8 @@ class _AdminHomeState extends State<AdminHome> {
                     color: AppTheme.primaryColor,
                     onTap: () {
                       Navigator.of(context).pushNamed(AppRoutes.users);
-                    },
-                  ),
+                    }
+                  )
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -118,10 +117,10 @@ class _AdminHomeState extends State<AdminHome> {
                     color: AppTheme.secondaryColor,
                     onTap: () {
                       Navigator.of(context).pushNamed(AppRoutes.positions);
-                    },
-                  ),
-                ),
-              ],
+                    }
+                  )
+                )
+              ]
             ),
             const SizedBox(height: 16),
             Row(
@@ -134,8 +133,8 @@ class _AdminHomeState extends State<AdminHome> {
                     color: AppTheme.accentColor,
                     onTap: () {
                       Navigator.of(context).pushNamed(AppRoutes.tasks);
-                    },
-                  ),
+                    }
+                  )
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -150,23 +149,21 @@ class _AdminHomeState extends State<AdminHome> {
                         AppRoutes.tasks,
                         arguments: TaskStatus.pending.name
                       );
-                    },
-                  ),
-                ),
-              ],
+                    }
+                  )
+                )
+              ]
             ),
             const SizedBox(height: 32),
             
-            // Seção de gerenciamento
             Text(
               'Gerenciamento',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                fontWeight: FontWeight.bold
+              )
             ),
             const SizedBox(height: 16),
             
-            // Lista de opções de gerenciamento
             _buildManagementOption(
               context,
               title: 'Gerenciar Usuários',
@@ -174,7 +171,7 @@ class _AdminHomeState extends State<AdminHome> {
               icon: Icons.people,
               onTap: () {
                 Navigator.of(context).pushNamed(AppRoutes.users);
-              },
+              }
             ),
             _buildManagementOption(
               context,
@@ -183,7 +180,7 @@ class _AdminHomeState extends State<AdminHome> {
               icon: Icons.work,
               onTap: () {
                 Navigator.of(context).pushNamed(AppRoutes.positions);
-              },
+              }
             ),
             _buildManagementOption(
               context,
@@ -192,11 +189,11 @@ class _AdminHomeState extends State<AdminHome> {
               icon: Icons.assignment,
               onTap: () {
                 Navigator.of(context).pushNamed(AppRoutes.tasks);
-              },
+              }
             )
-          ],
-        ),
-      ),
+          ]
+        )
+      )
     );
   }
 
@@ -205,7 +202,7 @@ class _AdminHomeState extends State<AdminHome> {
     required String title,
     required String subtitle,
     required IconData icon,
-    required VoidCallback onTap,
+    required VoidCallback onTap
   }) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
@@ -214,19 +211,19 @@ class _AdminHomeState extends State<AdminHome> {
           backgroundColor: AppTheme.primaryColor.withOpacity(0.1),
           child: Icon(
             icon,
-            color: AppTheme.primaryColor,
-          ),
+            color: AppTheme.primaryColor
+          )
         ),
         title: Text(
           title,
           style: const TextStyle(
-            fontWeight: FontWeight.w600,
-          ),
+            fontWeight: FontWeight.w600
+          )
         ),
         subtitle: Text(subtitle),
         trailing: const Icon(Icons.chevron_right),
-        onTap: onTap,
-      ),
+        onTap: onTap
+      )
     );
   }
 }

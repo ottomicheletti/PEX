@@ -41,8 +41,8 @@ class TaskModel {
     required this.status,
     this.assignedUserIds = const [],
     this.assignedPositionIds = const [],
-    this.isRecurring = false, // Valor padrão
-    this.recurrenceType, // Pode ser nulo se não for recorrente
+    this.isRecurring = false,
+    this.recurrenceType
   });
 
   factory TaskModel.fromFirestore(DocumentSnapshot doc) {
@@ -94,13 +94,12 @@ class TaskModel {
       'assigned_user_ids': assignedUserIds,
       'assigned_position_ids': assignedPositionIds,
       'is_recurring': isRecurring,
-      'recurrence_type': recurrenceType?.toString().split('.').last, // Salva o nome da enum como string
-      'createdAt': FieldValue.serverTimestamp(), // Adicionado para ordenação em TaskScreen
-      'updatedAt': FieldValue.serverTimestamp(), // Adicionado para controle de atualização
+      'recurrence_type': recurrenceType?.toString().split('.').last,
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp()
     };
   }
 
-  // toJson() é frequentemente um alias para toMap() para serialização JSON
   Map<String, dynamic> toJson() => toMap();
 
   TaskModel copyWith({

@@ -4,7 +4,7 @@ import 'package:agpop/repositories/position_repository.dart';
 import 'package:agpop/theme/app_theme.dart';
 import 'package:agpop/widgets/custom_button.dart';
 import 'package:agpop/widgets/loading_indicator.dart';
-import 'package:agpop/screens/admin/position_form_screen.dart'; // Import the new form screen
+import 'package:agpop/screens/admin/position_form_screen.dart';
 
 class PositionScreen extends StatefulWidget {
   const PositionScreen({super.key});
@@ -56,7 +56,7 @@ class _PositionScreenState extends State<PositionScreen> {
           SnackBar(
             content: Text('Erro ao carregar funções: ${error.toString()}'),
             backgroundColor: AppTheme.errorColor,
-          ),
+          )
         );
         setState(() {
           _isLoading = false;
@@ -79,14 +79,13 @@ class _PositionScreenState extends State<PositionScreen> {
     final result = await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => PositionFormScreen(
-          position: position,
-        ),
-      ),
+          position: position
+        )
+      )
     );
 
     if (result == true) {
-      // Se a tela de formulário retornou true, significa que uma alteração foi feita
-      _loadPositions(); // Recarrega a lista para mostrar a alteração
+      _loadPositions();
     }
   }
 
@@ -100,7 +99,7 @@ class _PositionScreenState extends State<PositionScreen> {
           SnackBar(
             content: Text('Status da função atualizado com sucesso!'),
             backgroundColor: AppTheme.completedColor,
-          ),
+          )
         );
       }
     } catch (error) {
@@ -109,7 +108,7 @@ class _PositionScreenState extends State<PositionScreen> {
           SnackBar(
             content: Text('Erro ao atualizar status: ${error.toString()}'),
             backgroundColor: AppTheme.errorColor,
-          ),
+          )
         );
       }
     }
@@ -129,9 +128,9 @@ class _PositionScreenState extends State<PositionScreen> {
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
             child: Text('Eliminar', style: TextStyle(color: AppTheme.errorColor)),
-          ),
-        ],
-      ),
+          )
+        ]
+      )
     );
 
     if (confirmDelete == true) {
@@ -143,7 +142,7 @@ class _PositionScreenState extends State<PositionScreen> {
             SnackBar(
               content: Text('Função "${position.name}" eliminada com sucesso!'),
               backgroundColor: AppTheme.completedColor,
-            ),
+            )
           );
         }
       } catch (error) {
@@ -151,8 +150,8 @@ class _PositionScreenState extends State<PositionScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('Erro ao eliminar função: ${error.toString()}'),
-              backgroundColor: AppTheme.errorColor,
-            ),
+              backgroundColor: AppTheme.errorColor
+            )
           );
         }
       }
@@ -172,7 +171,7 @@ class _PositionScreenState extends State<PositionScreen> {
                 onTap: () {
                   Navigator.of(context).pop();
                   _navigateToPositionForm(position: position);
-                },
+                }
               ),
               ListTile(
                 leading: Icon(position.isActive ? Icons.toggle_off : Icons.toggle_on),
@@ -180,7 +179,7 @@ class _PositionScreenState extends State<PositionScreen> {
                 onTap: () {
                   Navigator.of(context).pop();
                   _togglePositionStatus(position);
-                },
+                }
               ),
               ListTile(
                 leading: Icon(Icons.delete_forever, color: AppTheme.errorColor),
@@ -189,11 +188,11 @@ class _PositionScreenState extends State<PositionScreen> {
                   Navigator.of(context).pop();
                   _deletePosition(position);
                 },
-              ),
-            ],
-          ),
+              )
+            ]
+          )
         );
-      },
+      }
     );
   }
 
@@ -201,7 +200,7 @@ class _PositionScreenState extends State<PositionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Gerenciar Funções'),
+        title: const Text('Gerenciar Funções')
       ),
       body: _isLoading
           ? const LoadingIndicator()
@@ -216,25 +215,25 @@ class _PositionScreenState extends State<PositionScreen> {
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
+                  borderSide: BorderSide.none
                 ),
                 filled: true,
-                fillColor: Theme.of(context).cardColor,
+                fillColor: Theme.of(context).cardColor
               ),
             ),
           ),
           Expanded(
             child: _filteredPositions.isEmpty
                 ? _buildEmptyState()
-                : _buildPositionsList(),
-          ),
-        ],
+                : _buildPositionsList()
+          )
+        ]
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _navigateToPositionForm(),
         backgroundColor: AppTheme.primaryColor,
-        child: const Icon(Icons.add),
-      ),
+        child: const Icon(Icons.add)
+      )
     );
   }
 
@@ -246,25 +245,25 @@ class _PositionScreenState extends State<PositionScreen> {
           Icon(
             Icons.work_off,
             size: 64,
-            color: AppTheme.subtitleTextColor.withValues(alpha: 0.5),
+            color: AppTheme.subtitleTextColor.withValues(alpha: 0.5)
           ),
           const SizedBox(height: 16),
           Text(
             _searchQuery.isEmpty ? 'Nenhuma função cadastrada' : 'Nenhuma função encontrada',
             style: TextStyle(
               color: AppTheme.subtitleTextColor,
-              fontSize: 16,
-            ),
+              fontSize: 16
+            )
           ),
           const SizedBox(height: 24),
           if (_searchQuery.isEmpty)
             CustomButton(
               text: 'Adicionar Função',
               icon: Icons.add,
-              onPressed: () => _navigateToPositionForm(),
-            ),
-        ],
-      ),
+              onPressed: () => _navigateToPositionForm()
+            )
+        ]
+      )
     );
   }
 
@@ -274,7 +273,6 @@ class _PositionScreenState extends State<PositionScreen> {
       itemCount: _filteredPositions.length,
       itemBuilder: (context, index) {
         final position = _filteredPositions[index];
-        // Determina o IconData. Se não houver, usa um ícone padrão.
         final iconData = position.iconCodePoint != null
             ? IconData(position.iconCodePoint!, fontFamily: 'MaterialIcons')
             : Icons.work_outline;
@@ -302,15 +300,15 @@ class _PositionScreenState extends State<PositionScreen> {
                       color: position.isActive
                           ? AppTheme.primaryColor.withValues(alpha: 0.1)
                           : AppTheme.subtitleTextColor.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8)
                     ),
                     child: Icon(
-                      iconData, // Usando o ícone dinâmico aqui
+                      iconData,
                       color: position.isActive
                           ? AppTheme.primaryColor
                           : AppTheme.subtitleTextColor,
-                      size: 28,
-                    ),
+                      size: 28
+                    )
                   ),
                   const SizedBox(width: 16),
                   Expanded(
@@ -324,33 +322,33 @@ class _PositionScreenState extends State<PositionScreen> {
                             fontSize: 16,
                             color: position.isActive
                                 ? Theme.of(context).textTheme.bodyLarge?.color
-                                : AppTheme.subtitleTextColor,
+                                : AppTheme.subtitleTextColor
                           ),
                           maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                          overflow: TextOverflow.ellipsis
                         ),
                         Text(
                           position.isActive ? 'Ativa' : 'Inativa',
                           style: TextStyle(
                             fontSize: 13,
-                            color: position.isActive ? AppTheme.completedColor : AppTheme.cancelledColor,
-                          ),
-                        ),
-                      ],
-                    ),
+                            color: position.isActive ? AppTheme.completedColor : AppTheme.cancelledColor
+                          )
+                        )
+                      ]
+                    )
                   ),
                   IconButton(
                     icon: const Icon(Icons.more_vert),
                     onPressed: () {
                       _showItemOptions(context, position);
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
+                    }
+                  )
+                ]
+              )
+            )
+          )
         );
-      },
+      }
     );
   }
 }

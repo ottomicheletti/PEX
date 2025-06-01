@@ -62,7 +62,7 @@ class _UserScreenState extends State<UserScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Erro ao carregar dados: ${error.toString()}'),
-            backgroundColor: AppTheme.errorColor,
+            backgroundColor: AppTheme.errorColor
           ),
         );
         setState(() {
@@ -103,9 +103,9 @@ class _UserScreenState extends State<UserScreen> {
       MaterialPageRoute(
         builder: (_) => UserFormScreen(
           user: user,
-          positions: _allPositions,
-        ),
-      ),
+          positions: _allPositions
+        )
+      )
     );
 
     if (result == true) {
@@ -121,7 +121,7 @@ class _UserScreenState extends State<UserScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(user.isActive ? 'Usuário inativado com sucesso!' : 'Usuário ativado com sucesso!'),
-            backgroundColor: AppTheme.completedColor,
+            backgroundColor: AppTheme.completedColor
           ),
         );
       }
@@ -130,8 +130,8 @@ class _UserScreenState extends State<UserScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Erro ao atualizar status: ${error.toString()}'),
-            backgroundColor: AppTheme.errorColor,
-          ),
+            backgroundColor: AppTheme.errorColor
+          )
         );
       }
     }
@@ -146,14 +146,14 @@ class _UserScreenState extends State<UserScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancelar'),
+            child: const Text('Cancelar')
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text('Eliminar', style: TextStyle(color: AppTheme.errorColor)),
-          ),
-        ],
-      ),
+            child: Text('Eliminar', style: TextStyle(color: AppTheme.errorColor))
+          )
+        ]
+      )
     );
 
     if (confirmDelete == true) {
@@ -164,8 +164,8 @@ class _UserScreenState extends State<UserScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('Usuário "${user.name}" eliminado com sucesso!'),
-              backgroundColor: AppTheme.completedColor,
-            ),
+              backgroundColor: AppTheme.completedColor
+            )
           );
         }
       } catch (error) {
@@ -173,8 +173,8 @@ class _UserScreenState extends State<UserScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('Erro ao eliminar usuário: ${error.toString()}'),
-              backgroundColor: AppTheme.errorColor,
-            ),
+              backgroundColor: AppTheme.errorColor
+            )
           );
         }
       }
@@ -194,7 +194,7 @@ class _UserScreenState extends State<UserScreen> {
                 onTap: () {
                   Navigator.of(context).pop();
                   _navigateToUserForm(user: user);
-                },
+                }
               ),
               ListTile(
                 leading: Icon(user.isActive ? Icons.toggle_off : Icons.toggle_on),
@@ -202,7 +202,7 @@ class _UserScreenState extends State<UserScreen> {
                 onTap: () {
                   Navigator.of(context).pop();
                   _toggleUserStatus(user);
-                },
+                }
               ),
               ListTile(
                 leading: Icon(Icons.delete_forever, color: AppTheme.errorColor),
@@ -210,12 +210,12 @@ class _UserScreenState extends State<UserScreen> {
                 onTap: () {
                   Navigator.of(context).pop();
                   _deleteUser(user);
-                },
-              ),
-            ],
-          ),
+                }
+              )
+            ]
+          )
         );
-      },
+      }
     );
   }
 
@@ -223,7 +223,7 @@ class _UserScreenState extends State<UserScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Gerenciar Usuários'),
+        title: const Text('Gerenciar Usuários')
       ),
       body: _isLoading
           ? const LoadingIndicator()
@@ -238,25 +238,25 @@ class _UserScreenState extends State<UserScreen> {
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
+                  borderSide: BorderSide.none
                 ),
                 filled: true,
-                fillColor: Theme.of(context).cardColor,
-              ),
-            ),
+                fillColor: Theme.of(context).cardColor
+              )
+            )
           ),
           Expanded(
             child: _filteredUsers.isEmpty
                 ? _buildEmptyState()
-                : _buildUsersList(),
-          ),
-        ],
+                : _buildUsersList()
+          )
+        ]
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _navigateToUserForm(),
         backgroundColor: AppTheme.primaryColor,
-        child: const Icon(Icons.person_add),
-      ),
+        child: const Icon(Icons.person_add)
+      )
     );
   }
 
@@ -268,7 +268,7 @@ class _UserScreenState extends State<UserScreen> {
           Icon(
             Icons.people_outline,
             size: 64,
-            color: AppTheme.subtitleTextColor.withValues(alpha: 0.5),
+            color: AppTheme.subtitleTextColor.withValues(alpha: 0.5)
           ),
           const SizedBox(height: 16),
           Text(
@@ -277,19 +277,19 @@ class _UserScreenState extends State<UserScreen> {
                 : 'Nenhum usuário encontrado',
             style: TextStyle(
               color: AppTheme.subtitleTextColor,
-              fontSize: 16,
-            ),
+              fontSize: 16
+            )
           ),
           if (_searchQuery.isEmpty) ...[
             const SizedBox(height: 24),
             CustomButton(
               text: 'Adicionar Usuário',
               icon: Icons.person_add,
-              onPressed: () => _navigateToUserForm(),
-            ),
-          ],
-        ],
-      ),
+              onPressed: () => _navigateToUserForm()
+            )
+          ]
+        ]
+      )
     );
   }
 
@@ -323,8 +323,8 @@ class _UserScreenState extends State<UserScreen> {
               child: Icon(
                 IconData(position.iconCodePoint!, fontFamily: 'MaterialIcons'),
                 color: Colors.grey.shade600,
-                size: 18,
-              ),
+                size: 18
+              )
             );
           }
           return const SizedBox.shrink();
@@ -358,9 +358,9 @@ class _UserScreenState extends State<UserScreen> {
                           style: TextStyle(
                             color: AppTheme.primaryColor,
                             fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                          ),
-                        ),
+                            fontSize: 20
+                          )
+                        )
                       ),
                       Positioned(
                         bottom: 0,
@@ -371,11 +371,11 @@ class _UserScreenState extends State<UserScreen> {
                           decoration: BoxDecoration(
                             color: user.isActive ? AppTheme.completedColor : Colors.grey.shade400,
                             shape: BoxShape.circle,
-                            border: Border.all(color: Colors.white, width: 2),
-                          ),
-                        ),
-                      ),
-                    ],
+                            border: Border.all(color: Colors.white, width: 2)
+                          )
+                        )
+                      )
+                    ]
                   ),
                   const SizedBox(width: 16),
 
@@ -392,24 +392,23 @@ class _UserScreenState extends State<UserScreen> {
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
                                   fontSize: 16,
-                                  color: Theme.of(context).textTheme.bodyLarge?.color,
+                                  color: Theme.of(context).textTheme.bodyLarge?.color
                                 ),
                                 maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
+                                overflow: TextOverflow.ellipsis
+                              )
                             ),
-                            // Container da Role (apenas ícone)
                             Container(
-                              padding: const EdgeInsets.all(4), // Reduz o padding para o ícone
+                              padding: const EdgeInsets.all(4),
                               margin: const EdgeInsets.only(left: 8),
                               decoration: BoxDecoration(
                                 color: roleColor.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(12)
                               ),
-                              child: Icon( // Apenas o ícone
+                              child: Icon(
                                 user.role == UserRole.admin ? Icons.verified_user : Icons.person,
-                                size: 16, // Tamanho do ícone da role
-                                color: roleColor,
+                                size: 16,
+                                color: roleColor
                               ),
                             ),
                             IconButton(
@@ -418,18 +417,18 @@ class _UserScreenState extends State<UserScreen> {
                                 _showItemOptions(context, user);
                               },
                               padding: EdgeInsets.zero,
-                              constraints: const BoxConstraints(),
-                            ),
-                          ],
+                              constraints: const BoxConstraints()
+                            )
+                          ]
                         ),
                         Text(
                           user.email,
                           style: TextStyle(
                             fontSize: 13,
-                            color: AppTheme.subtitleTextColor,
+                            color: AppTheme.subtitleTextColor
                           ),
                           maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                          overflow: TextOverflow.ellipsis
                         ),
                         const SizedBox(height: 8),
 
@@ -438,16 +437,16 @@ class _UserScreenState extends State<UserScreen> {
                             spacing: 8.0,
                             runSpacing: 4.0,
                             children: positionIconWidgets,
-                          ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+                          )
+                      ]
+                    )
+                  )
+                ]
+              )
+            )
+          )
         );
-      },
+      }
     );
   }
 }

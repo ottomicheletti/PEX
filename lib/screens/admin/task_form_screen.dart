@@ -1,14 +1,11 @@
-// lib/screens/admin/task_form_screen.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:agpop/models/task_model.dart'; // Ensure TaskModel is updated
+import 'package:agpop/models/task_model.dart';
 import 'package:agpop/models/user_model.dart';
 import 'package:agpop/models/position_model.dart';
 import 'package:agpop/theme/app_theme.dart';
 import 'package:agpop/widgets/custom_button.dart';
-import 'package:intl/intl.dart'; // For formatting dates
 
-// TaskStatus and its extension (already present from previous context)
 extension TaskStatusExtension on TaskStatus {
   String get displayName {
     switch (this) {
@@ -24,10 +21,8 @@ extension TaskStatusExtension on TaskStatus {
   }
 }
 
-// Enum to manage assignment mode (already present)
 enum AssignmentMode { position, user }
 
-// Recurrence type options
 enum RecurrenceType { daily, weekly, bi_weekly, monthly_day }
 
 extension RecurrenceTypeExtension on RecurrenceType {
@@ -44,7 +39,7 @@ extension RecurrenceTypeExtension on RecurrenceType {
     }
   }
 
-  String get value { // For storing in Firestore
+  String get value {
     switch (this) {
       case RecurrenceType.daily:
         return 'daily';
@@ -73,7 +68,7 @@ class TaskFormScreen extends StatefulWidget {
     super.key,
     this.task,
     required this.availableUsers,
-    required this.availablePositions,
+    required this.availablePositions
   });
 
   @override
@@ -85,12 +80,10 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
   late TextEditingController _titleController;
   late TextEditingController _descriptionController;
 
-  // Assignment state (already present)
   AssignmentMode _assignmentMode = AssignmentMode.position;
   List<String> _assignedUserIds = [];
   String? _selectedPositionId;
 
-  // Recurrence state
   bool _isRecurring = false;
   RecurrenceType? _selectedRecurrenceType;
 
@@ -99,8 +92,6 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
     super.initState();
     _titleController = TextEditingController(text: widget.task?.title ?? '');
     _descriptionController = TextEditingController(text: widget.task?.description ?? '');
-
-    // Assignment initialization (from previous step)
     _assignedUserIds = [];
     _selectedPositionId = null;
     if (widget.task != null) {
@@ -116,22 +107,18 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
         _assignmentMode = AssignmentMode.position;
       }
 
-      // Initialize recurrence fields from task (assuming TaskModel has these fields)
       try {
         _isRecurring = (widget.task as dynamic).isRecurring ?? false;
         _selectedRecurrenceType = recurrenceTypeFromString((widget.task as dynamic).recurrenceType);
       } catch (e) {
-        // Fallback if fields don't exist on widget.task (e.g., old model)
         _isRecurring = false;
         _selectedRecurrenceType = null;
       }
     } else {
-      // Defaults for a new task
       _assignmentMode = AssignmentMode.position;
-      _isRecurring = false; // Default new tasks are not recurring
+      _isRecurring = false;
     }
 
-    // Set a default recurrence type if recurring is true but no type is selected (e.g., new recurring task)
     if (_isRecurring && _selectedRecurrenceType == null) {
       _selectedRecurrenceType = RecurrenceType.daily;
     }
@@ -149,7 +136,6 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
       return;
     }
 
-    // Assignment validation (from previous step)
     bool assignmentValid = true;
     String assignmentErrorMsg = '';
     if (_assignmentMode == AssignmentMode.position && _selectedPositionId == null) {
@@ -164,14 +150,12 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
       return;
     }
 
-    // Recurrence validation
     if (_isRecurring && _selectedRecurrenceType == null) {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Tipo de recorrência é obrigatório para tarefas recorrentes.')));
       return;
     }
 
-    // --- Prepare data for Firestore ---
     Map<String, dynamic> taskDataPayload = {
       'title': _titleController.text,
       'description': _descriptionController.text,
@@ -179,16 +163,15 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
       'assigned_position_ids': _assignmentMode == AssignmentMode.position && _selectedPositionId != null
           ? [_selectedPositionId!]
           : [],
-      'status': (widget.task?.status ?? TaskStatus.pending).name, // Assuming status is stored as string name
-      // Recurrence fields
+      'status': (widget.task?.status ?? TaskStatus.pending).name,
       'is_recurring': _isRecurring,
       'recurrence_type': _isRecurring ? _selectedRecurrenceType?.value : null,
     };
 
 
-    if (widget.task == null) { // New Task
+    if (widget.task == null) {
       String taskId = FirebaseFirestore.instance.collection('tasks').doc().id;
-      taskDataPayload['id'] = taskId; // If your TaskModel itself doesn't add ID to toMap
+      taskDataPayload['id'] = taskId;
       taskDataPayload['createdAt'] = FieldValue.serverTimestamp();
       taskDataPayload['updatedAt'] = FieldValue.serverTimestamp();
 
@@ -197,7 +180,7 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
       }).catchError((e) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erro ao criar tarefa: $e')));
       });
-    } else { // Update Existing Task
+    } else {
       taskDataPayload['updatedAt'] = FieldValue.serverTimestamp();
       FirebaseFirestore.instance.collection('tasks').doc(widget.task!.id).update(taskDataPayload).then((_) {
         Navigator.of(context).pop(true);
@@ -216,7 +199,7 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
               if (_assignmentMode != AssignmentMode.position) {
                 setState(() {
                   _assignmentMode = AssignmentMode.position;
-                  _assignedUserIds.clear(); // Clear user selections when switching to position
+                  _assignedUserIds.clear();
                 });
               }
             },
@@ -225,10 +208,10 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
               foregroundColor: _assignmentMode == AssignmentMode.position ? Colors.white : AppTheme.primaryColor,
               side: _assignmentMode == AssignmentMode.position ? null : BorderSide(color: AppTheme.primaryColor.withOpacity(0.5)),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-              padding: const EdgeInsets.symmetric(vertical: 12),
+              padding: const EdgeInsets.symmetric(vertical: 12)
             ),
-            child: const Text('Por Posição'),
-          ),
+            child: const Text('Por Posição')
+          )
         ),
         const SizedBox(width: 8),
         Expanded(
@@ -237,7 +220,7 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
               if (_assignmentMode != AssignmentMode.user) {
                 setState(() {
                   _assignmentMode = AssignmentMode.user;
-                  _selectedPositionId = null; // Clear position selection when switching to user
+                  _selectedPositionId = null;
                 });
               }
             },
@@ -246,12 +229,12 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
               foregroundColor: _assignmentMode == AssignmentMode.user ? Colors.white : AppTheme.primaryColor,
               side: _assignmentMode == AssignmentMode.user ? null : BorderSide(color: AppTheme.primaryColor.withOpacity(0.5)),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-              padding: const EdgeInsets.symmetric(vertical: 12),
+              padding: const EdgeInsets.symmetric(vertical: 12)
             ),
-            child: const Text('Por Usuário'),
-          ),
-        ),
-      ],
+            child: const Text('Por Usuário')
+          )
+        )
+      ]
     );
   }
 
@@ -259,7 +242,7 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
     if (widget.availablePositions.isEmpty) {
       return const Padding(
         padding: EdgeInsets.symmetric(vertical: 16.0),
-        child: Center(child: Text('Nenhuma posição disponível.')),
+        child: Center(child: Text('Nenhuma posição disponível.'))
       );
     }
     return Column(
@@ -267,7 +250,7 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
       children: [
         const Padding(
           padding: EdgeInsets.only(top: 16.0, bottom: 8.0),
-          child: Text('Selecionar Posição', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+          child: Text('Selecionar Posição', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500))
         ),
         ListView.builder(
           shrinkWrap: true,
@@ -286,11 +269,11 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
               },
               activeColor: AppTheme.primaryColor,
               controlAffinity: ListTileControlAffinity.trailing,
-              contentPadding: EdgeInsets.zero,
+              contentPadding: EdgeInsets.zero
             );
-          },
-        ),
-      ],
+          }
+        )
+      ]
     );
   }
 
@@ -298,7 +281,7 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
     if (widget.availableUsers.isEmpty) {
       return const Padding(
         padding: EdgeInsets.symmetric(vertical: 16.0),
-        child: Center(child: Text('Nenhum usuário disponível.')),
+        child: Center(child: Text('Nenhum usuário disponível.'))
       );
     }
     return Column(
@@ -306,7 +289,7 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
       children: [
         Padding(
           padding: const EdgeInsets.only(top: 16.0, bottom: 8.0),
-          child: Text(_assignmentMode == AssignmentMode.user ? 'Selecionar Usuário(s)' : 'Selecionar Usuário', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+          child: Text(_assignmentMode == AssignmentMode.user ? 'Selecionar Usuário(s)' : 'Selecionar Usuário', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500))
         ),
         ListView.builder(
           shrinkWrap: true,
@@ -330,11 +313,11 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
               },
               activeColor: AppTheme.primaryColor,
               controlAffinity: ListTileControlAffinity.leading,
-              contentPadding: EdgeInsets.zero,
+              contentPadding: EdgeInsets.zero
             );
-          },
-        ),
-      ],
+          }
+        )
+      ]
     );
   }
 
@@ -343,7 +326,7 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.task == null ? 'Nova Tarefa' : 'Editar Tarefa'),
+        title: Text(widget.task == null ? 'Nova Tarefa' : 'Editar Tarefa')
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -355,7 +338,7 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
                 controller: _titleController,
                 decoration: InputDecoration(
                   labelText: 'Título da Tarefa',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12))
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) return 'Por favor, insira um título';
@@ -370,11 +353,11 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                   alignLabelWithHint: true,
                 ),
-                maxLines: 3, minLines: 1,
+                maxLines: 3,
+                minLines: 1
               ),
               const SizedBox(height: 20),
 
-              // --- Recurrence Section ---
               SwitchListTile(
                 title: const Text('Tarefa Recorrente?'),
                 value: _isRecurring,
@@ -382,15 +365,14 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
                   setState(() {
                     _isRecurring = value;
                     if (_isRecurring) {
-                      _selectedRecurrenceType ??= RecurrenceType.daily; // Default if enabling
+                      _selectedRecurrenceType ??= RecurrenceType.daily;
                     } else {
-                      // Clear recurrence fields when disabled
                       _selectedRecurrenceType = null;
                     }
                   });
                 },
                 activeColor: AppTheme.primaryColor,
-                contentPadding: EdgeInsets.zero,
+                contentPadding: EdgeInsets.zero
               ),
               if (_isRecurring) ...[
                 const SizedBox(height: 8),
@@ -398,12 +380,12 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
                   value: _selectedRecurrenceType,
                   decoration: InputDecoration(
                     labelText: 'Tipo de Recorrência',
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12))
                   ),
                   items: RecurrenceType.values.map((type) {
                     return DropdownMenuItem(
                       value: type,
-                      child: Text(type.displayName),
+                      child: Text(type.displayName)
                     );
                   }).toList(),
                   onChanged: (RecurrenceType? newValue) {
@@ -415,9 +397,6 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
                 ),
               ],
               const SizedBox(height: 20),
-
-
-              // --- Assignment Section --- (Same as before)
               const Text('Atribuição', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               const SizedBox(height: 10),
               _buildAssignmentToggleButtons(),
@@ -425,19 +404,19 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
                 duration: const Duration(milliseconds: 300),
                 child: _assignmentMode == AssignmentMode.position
                     ? _buildPositionSelection()
-                    : _buildUserSelection(),
+                    : _buildUserSelection()
               ),
               const SizedBox(height: 24),
 
               CustomButton(
                 text: widget.task == null ? 'Criar Tarefa' : 'Salvar Alterações',
                 icon: Icons.save,
-                onPressed: _saveTask,
-              ),
-            ],
-          ),
-        ),
-      ),
+                onPressed: _saveTask
+              )
+            ]
+          )
+        )
+      )
     );
   }
 }

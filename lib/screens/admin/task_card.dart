@@ -1,16 +1,14 @@
-
 import 'package:flutter/material.dart';
 import 'package:agpop/models/task_model.dart';
 import 'package:agpop/models/user_model.dart';
 import 'package:agpop/models/position_model.dart';
 import 'package:agpop/theme/app_theme.dart';
-// import 'package:intl/intl.dart';
 import 'package:agpop/widgets/custom_button.dart';
 
 class TaskCard extends StatelessWidget {
   final TaskModel task;
-  final List<UserModel> assignedUsers; // Novos campos
-  final List<PositionModel> assignedPositions; // Novos campos
+  final List<UserModel> assignedUsers;
+  final List<PositionModel> assignedPositions;
   final bool isAdmin;
   final Function(TaskStatus) onStatusChanged;
   final VoidCallback onEdit;
@@ -19,12 +17,12 @@ class TaskCard extends StatelessWidget {
   const TaskCard({
     super.key,
     required this.task,
-    required this.assignedUsers, // Adicione ao construtor
-    required this.assignedPositions, // Adicione ao construtor
+    required this.assignedUsers,
+    required this.assignedPositions,
     required this.isAdmin,
     required this.onStatusChanged,
     required this.onEdit,
-    required this.onDelete,
+    required this.onDelete
   });
 
   Color _getStatusColor(TaskStatus status) {
@@ -32,11 +30,11 @@ class TaskCard extends StatelessWidget {
       case TaskStatus.pending:
         return Colors.orange;
       case TaskStatus.started:
-        return AppTheme.primaryColor; // Azul
+        return AppTheme.primaryColor;
       case TaskStatus.completed:
-        return AppTheme.completedColor; // Verde
+        return AppTheme.completedColor;
       case TaskStatus.cancelled:
-        return AppTheme.errorColor; // Vermelho
+        return AppTheme.errorColor;
     }
   }
 
@@ -59,12 +57,12 @@ class TaskCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12)
       ),
       color: Theme.of(context).cardColor,
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        onTap: onEdit, // Mantém a edição no clique do card
+        onTap: onEdit,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -79,11 +77,11 @@ class TaskCard extends StatelessWidget {
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 18,
-                        color: Theme.of(context).textTheme.bodyLarge?.color,
+                        color: Theme.of(context).textTheme.bodyLarge?.color
                       ),
                       maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                      overflow: TextOverflow.ellipsis
+                    )
                   ),
                   PopupMenuButton<TaskStatus>(
                     icon: Icon(Icons.more_vert, color: AppTheme.subtitleTextColor),
@@ -94,22 +92,22 @@ class TaskCard extends StatelessWidget {
                       return TaskStatus.values.map((status) {
                         return PopupMenuItem<TaskStatus>(
                           value: status,
-                          child: Text(_getStatusText(status)),
+                          child: Text(_getStatusText(status))
                         );
                       }).toList();
-                    },
-                  ),
-                ],
+                    }
+                  )
+                ]
               ),
               const SizedBox(height: 4),
               Text(
                 task.description,
                 style: TextStyle(
                   fontSize: 14,
-                  color: AppTheme.subtitleTextColor,
+                  color: AppTheme.subtitleTextColor
                 ),
                 maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+                overflow: TextOverflow.ellipsis
               ),
               const SizedBox(height: 8),
               Row(
@@ -120,18 +118,18 @@ class TaskCard extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
                       color: _getStatusColor(task.status).withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8)
                     ),
                     child: Text(
                       _getStatusText(task.status),
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
-                        color: _getStatusColor(task.status),
-                      ),
-                    ),
-                  ),
-                ],
+                        color: _getStatusColor(task.status)
+                      )
+                    )
+                  )
+                ]
               ),
               if (task.isRecurring)
                 Padding(
@@ -144,11 +142,11 @@ class TaskCard extends StatelessWidget {
                         'Recorrência: ${task.recurrenceType ?? 'Não definido'}',
                         style: TextStyle(
                           fontSize: 13,
-                          color: AppTheme.subtitleTextColor,
-                        ),
-                      ),
-                    ],
-                  ),
+                          color: AppTheme.subtitleTextColor
+                        )
+                      )
+                    ]
+                  )
                 ),
               const SizedBox(height: 12),
               if (assignedUsers.isNotEmpty)
@@ -163,21 +161,21 @@ class TaskCard extends StatelessWidget {
                           spacing: 8.0,
                           runSpacing: 4.0,
                           children: assignedUsers.map((user) {
-                            return Tooltip( // Mostra o nome do usuário ao passar o mouse
+                            return Tooltip(
                               message: user.name,
                               child: CircleAvatar(
                                 radius: 14,
                                 backgroundColor: AppTheme.primaryColor.withOpacity(0.2),
                                 child: Text(
                                   user.name[0].toUpperCase(),
-                                  style: TextStyle(fontSize: 12, color: AppTheme.primaryColor),
-                                ),
-                              ),
+                                  style: TextStyle(fontSize: 12, color: AppTheme.primaryColor)
+                                )
+                              )
                             );
-                          }).toList(),
-                        ),
-                      ),
-                    ],
+                          }).toList()
+                        )
+                      )
+                    ]
                   ),
                 ),
 
@@ -199,24 +197,23 @@ class TaskCard extends StatelessWidget {
                                 height: 28,
                                 decoration: BoxDecoration(
                                   color: Colors.grey.shade200,
-                                  borderRadius: BorderRadius.circular(6),
+                                  borderRadius: BorderRadius.circular(6)
                                 ),
                                 child: Icon(
                                   IconData(position.iconCodePoint!, fontFamily: 'MaterialIcons'),
                                   color: Colors.grey.shade600,
-                                  size: 18,
-                                ),
-                              ),
+                                  size: 18
+                                )
+                              )
                             );
                           }
                           return const SizedBox.shrink();
-                        }).toList(),
-                      ),
-                    ),
-                  ],
+                        }).toList()
+                      )
+                    )
+                  ]
                 ),
 
-              // Ações de Edição e Exclusão (se for admin)
               if (isAdmin) ...[
                 const Divider(height: 24),
                 Row(
@@ -225,21 +222,21 @@ class TaskCard extends StatelessWidget {
                     TextButton(
                       onPressed: onDelete,
                       style: TextButton.styleFrom(foregroundColor: AppTheme.errorColor),
-                      child: const Text('Excluir'),
+                      child: const Text('Excluir')
                     ),
                     const SizedBox(width: 8),
                     CustomButton(
                       text: 'Editar',
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      onPressed: onEdit,
-                    ),
-                  ],
-                ),
-              ],
-            ],
-          ),
-        ),
-      ),
+                      onPressed: onEdit
+                    )
+                  ]
+                )
+              ]
+            ]
+          )
+        )
+      )
     );
   }
 }

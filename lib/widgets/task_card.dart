@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:agpop/models/task_model.dart';
 import 'package:agpop/theme/app_theme.dart';
-import 'package:intl/intl.dart';
-import 'package:agpop/models/user_model.dart'; // Importar UserModel
-import 'package:agpop/models/position_model.dart'; // Importar PositionModel
+import 'package:agpop/models/user_model.dart';
+import 'package:agpop/models/position_model.dart';
 
 class TaskCard extends StatelessWidget {
   final TaskModel task;
@@ -11,8 +10,8 @@ class TaskCard extends StatelessWidget {
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
   final bool isAdmin;
-  final List<UserModel> assignedUsers; // Adicionado para receber usuários atribuídos
-  final List<PositionModel> assignedPositions; // Adicionado para receber posições atribuídas
+  final List<UserModel> assignedUsers;
+  final List<PositionModel> assignedPositions;
 
   const TaskCard({
     super.key,
@@ -21,8 +20,8 @@ class TaskCard extends StatelessWidget {
     this.onEdit,
     this.onDelete,
     this.isAdmin = false,
-    this.assignedUsers = const [], // Valor padrão vazio
-    this.assignedPositions = const [], // Valor padrão vazio
+    this.assignedUsers = const [],
+    this.assignedPositions = const []
   });
 
   Color _getStatusColor(TaskStatus status) {
@@ -73,14 +72,14 @@ class TaskCard extends StatelessWidget {
           backgroundColor: _getStatusColor(task.status).withOpacity(0.2),
           child: Icon(
             _getStatusIcon(task.status),
-            color: _getStatusColor(task.status),
+            color: _getStatusColor(task.status)
           ),
         ),
         title: Text(
           task.title,
           style: const TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
+            fontWeight: FontWeight.bold
+          )
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,18 +89,18 @@ class TaskCard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               decoration: BoxDecoration(
                 color: _getStatusColor(task.status).withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(12)
               ),
               child: Text(
                 _getStatusText(task.status),
                 style: TextStyle(
                   fontSize: 12,
                   color: _getStatusColor(task.status),
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w500
                 ),
               ),
             ),
-            if (task.isRecurring) // Mostrar se a tarefa é recorrente
+            if (task.isRecurring)
               Padding(
                 padding: const EdgeInsets.only(top: 4.0),
                 child: Text(
@@ -109,11 +108,11 @@ class TaskCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 12,
                     color: AppTheme.subtitleTextColor,
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
-              ),
-          ],
+                    fontStyle: FontStyle.italic
+                  )
+                )
+              )
+          ]
         ),
         children: [
           Padding(
@@ -124,20 +123,19 @@ class TaskCard extends StatelessWidget {
                 const Text(
                   'Descrição:',
                   style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
+                    fontWeight: FontWeight.bold
+                  )
                 ),
                 const SizedBox(height: 8),
                 Text(task.description.isNotEmpty ? task.description : 'Nenhuma descrição fornecida.'),
                 const SizedBox(height: 16),
 
-                // Exibir atribuição por Usuário(s)
                 if (assignedUsers.isNotEmpty) ...[
                   const Text(
                     'Atribuído(s) a:',
                     style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
+                      fontWeight: FontWeight.bold
+                    )
                   ),
                   const SizedBox(height: 4),
                   Wrap(
@@ -146,19 +144,18 @@ class TaskCard extends StatelessWidget {
                     children: assignedUsers.map((user) => Chip(
                       label: Text(user.name),
                       backgroundColor: AppTheme.primaryColor.withOpacity(0.1),
-                      labelStyle: TextStyle(color: AppTheme.primaryColor),
-                    )).toList(),
+                      labelStyle: TextStyle(color: AppTheme.primaryColor)
+                    )).toList()
                   ),
                   const SizedBox(height: 16),
                 ],
 
-                // Exibir atribuição por Posição(ões)
                 if (assignedPositions.isNotEmpty) ...[
                   const Text(
                     'Atribuído(s) à Posição:',
                     style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
+                      fontWeight: FontWeight.bold
+                    )
                   ),
                   const SizedBox(height: 4),
                   ChipTheme(
@@ -167,14 +164,14 @@ class TaskCard extends StatelessWidget {
                       secondaryColor: AppTheme.secondaryColor,
                       labelStyle: TextStyle(
                         color: AppTheme.secondaryColor,
-                        fontSize: 16.0,
-                      ),
+                        fontSize: 16.0
+                      )
                     ).copyWith(
                       backgroundColor: AppTheme.secondaryColor.withOpacity(0.1),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20)
                       ),
-                      side: BorderSide.none, // Extra segurança
+                      side: BorderSide.none
                     ),
                     child: Wrap(
                       spacing: 8.0,
@@ -186,17 +183,16 @@ class TaskCard extends StatelessWidget {
                           ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20),
-                            side: BorderSide.none, // Ref ref: sem borda
+                            side: BorderSide.none
                           ),
-                          backgroundColor: AppTheme.secondaryColor.withOpacity(0.1),
-                        ),
-                      ).toList(),
-                    ),
+                          backgroundColor: AppTheme.secondaryColor.withOpacity(0.1)
+                        )
+                      ).toList()
+                    )
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 16)
                 ],
 
-                // Ações
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -206,59 +202,59 @@ class TaskCard extends StatelessWidget {
                           task.status == TaskStatus.pending ? Icons.play_arrow : Icons.check,
                           color: task.status == TaskStatus.pending
                               ? AppTheme.startedColor
-                              : AppTheme.completedColor,
+                              : AppTheme.completedColor
                         ),
                         label: Text(
                           task.status == TaskStatus.pending ? 'Iniciar' : 'Concluir',
                           style: TextStyle(
                             color: task.status == TaskStatus.pending
                                 ? AppTheme.startedColor
-                                : AppTheme.completedColor,
-                          ),
+                                : AppTheme.completedColor
+                          )
                         ),
                         style: TextButton.styleFrom(
                           backgroundColor: (task.status == TaskStatus.pending
                               ? AppTheme.startedColor
                               : AppTheme.completedColor)
-                              .withOpacity(0.1), // Cor de fundo com opacidade
+                              .withOpacity(0.1),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20), // Arredondado
+                            borderRadius: BorderRadius.circular(20),
                           ),
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                          foregroundColor: Colors.transparent, // Sem ripple visível
+                          foregroundColor: Colors.transparent
                         ),
                         onPressed: () {
                           onStatusChanged!(
                             task.status == TaskStatus.pending
                                 ? TaskStatus.started
-                                : TaskStatus.completed,
+                                : TaskStatus.completed
                           );
-                        },
-                      ),
+                        }
+                      )
                     ],
                     if (isAdmin) ...[
                       const SizedBox(width: 8),
                       if (onEdit != null)
                         IconButton(
                           icon: const Icon(Icons.edit),
-                          onPressed: onEdit,
+                          onPressed: onEdit
                         ),
                       if (onDelete != null)
                         IconButton(
                           icon: Icon(
                             Icons.delete,
-                            color: AppTheme.errorColor,
+                            color: AppTheme.errorColor
                           ),
-                          onPressed: onDelete,
+                          onPressed: onDelete
                         ),
-                    ],
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+                    ]
+                  ]
+                )
+              ]
+            )
+          )
+        ]
+      )
     );
   }
 }

@@ -8,7 +8,7 @@ import 'package:agpop/widgets/loading_indicator.dart';
 import 'package:agpop/widgets/icon_picker_field.dart';
 
 class PositionFormScreen extends StatefulWidget {
-  final PositionModel? position; // Opcional, para edição
+  final PositionModel? position;
 
   const PositionFormScreen({super.key, this.position});
 
@@ -21,7 +21,7 @@ class _PositionFormScreenState extends State<PositionFormScreen> {
   final PositionRepository _positionRepository = PositionRepository();
 
   final TextEditingController _nameController = TextEditingController();
-  IconData? _selectedIcon; // Estado para o ícone selecionado
+  IconData? _selectedIcon;
 
   bool _isSaving = false;
 
@@ -32,9 +32,9 @@ class _PositionFormScreenState extends State<PositionFormScreen> {
       _nameController.text = widget.position!.name;
       _selectedIcon = widget.position!.iconCodePoint != null
           ? IconData(widget.position!.iconCodePoint!, fontFamily: 'MaterialIcons')
-          : Icons.work_outline; // Default se não houver ícone salvo
+          : Icons.work_outline;
     } else {
-      _selectedIcon = Icons.work_outline; // Ícone padrão para nova função (briefcase)
+      _selectedIcon = Icons.work_outline;
     }
   }
 
@@ -55,13 +55,13 @@ class _PositionFormScreenState extends State<PositionFormScreen> {
           id: '',
           name: _nameController.text.trim(),
           isActive: true,
-          iconCodePoint: _selectedIcon?.codePoint,
+          iconCodePoint: _selectedIcon?.codePoint
         );
         await _positionRepository.add(newPosition);
       } else {
         final updatedPosition = widget.position!.copyWith(
           name: _nameController.text.trim(),
-          iconCodePoint: _selectedIcon?.codePoint,
+          iconCodePoint: _selectedIcon?.codePoint
         );
         await _positionRepository.update(updatedPosition.id, updatedPosition.toMap());
       }
@@ -70,7 +70,7 @@ class _PositionFormScreenState extends State<PositionFormScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(widget.position == null ? 'Função criada com sucesso!' : 'Função atualizada com sucesso!'),
-            backgroundColor: AppTheme.completedColor,
+            backgroundColor: AppTheme.completedColor
           ),
         );
         Navigator.of(context).pop(true);
@@ -80,7 +80,7 @@ class _PositionFormScreenState extends State<PositionFormScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Erro ao salvar função: ${e.toString()}'),
-            backgroundColor: AppTheme.errorColor,
+            backgroundColor: AppTheme.errorColor
           ),
         );
       }
@@ -98,7 +98,7 @@ class _PositionFormScreenState extends State<PositionFormScreen> {
         title: Text(widget.position == null ? 'Nova Função' : 'Editar Função'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => Navigator.of(context).pop()
         ),
       ),
       body: _isSaving
@@ -110,7 +110,6 @@ class _PositionFormScreenState extends State<PositionFormScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Área de seleção do ícone
               GestureDetector(
                 onTap: () async {
                   final selected = await showDialog<IconData?>(
@@ -120,12 +119,12 @@ class _PositionFormScreenState extends State<PositionFormScreen> {
                       content: SizedBox(
                         width: double.maxFinite,
                         height: MediaQuery.of(context).size.height * 0.6,
-                        child: const IconPickerField(),
+                        child: const IconPickerField()
                       ),
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.of(context).pop(),
-                          child: const Text('Cancelar'),
+                          child: const Text('Cancelar')
                         ),
                       ],
                     ),
@@ -147,34 +146,32 @@ class _PositionFormScreenState extends State<PositionFormScreen> {
                         color: Colors.black.withOpacity(0.05),
                         spreadRadius: 1,
                         blurRadius: 5,
-                        offset: const Offset(0, 3),
+                        offset: const Offset(0, 3)
                       ),
                     ],
                   ),
-                  child: Stack( // Usamos o Stack para o ícone principal e o de lápis
+                  child: Stack(
                     alignment: Alignment.center,
                     children: [
-                      // Ícone principal (sem o texto "Trocar Ícone")
                       Icon(
                         _selectedIcon,
                         size: 50,
-                        color: AppTheme.primaryColor,
+                        color: AppTheme.primaryColor
                       ),
-                      // Ícone de lápis posicionado no canto inferior direito, *fora* do círculo
                       Positioned(
-                        bottom: -2, // Ajuste para posicionar fora do círculo
-                        right: -2, // Ajuste para posicionar fora do círculo
+                        bottom: -2,
+                        right: -2,
                         child: Container(
-                          padding: const EdgeInsets.all(6), // Aumentei o padding para um círculo maior
+                          padding: const EdgeInsets.all(6),
                           decoration: BoxDecoration(
-                            color: AppTheme.primaryColor, // Cor de fundo do lápis
+                            color: AppTheme.primaryColor,
                             shape: BoxShape.circle,
-                            border: Border.all(color: Colors.white, width: 2), // Borda branca para destacar
+                            border: Border.all(color: Colors.white, width: 2)
                           ),
                           child: const Icon(
                             Icons.edit,
                             color: Colors.white,
-                            size: 18, // Tamanho do lápis ligeiramente menor
+                            size: 18
                           ),
                         ),
                       ),
@@ -184,20 +181,18 @@ class _PositionFormScreenState extends State<PositionFormScreen> {
               ),
               const SizedBox(height: 32),
 
-              // Campo de texto "Nome da Função"
               CustomTextField(
                 controller: _nameController,
                 label: 'Nome da Função',
                 hint: 'Ex: Garçom',
-                validator: (value) =>
-                value == null || value.isEmpty ? 'Informe o nome da função' : null,
+                validator: (value) => value == null || value.isEmpty ? 'Informe o nome da função' : null
               ),
               const SizedBox(height: 32),
 
               CustomButton(
                 text: 'Salvar',
                 isLoading: _isSaving,
-                onPressed: _submitForm,
+                onPressed: _submitForm
               ),
             ],
           ),

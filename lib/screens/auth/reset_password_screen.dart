@@ -56,8 +56,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(errorMessage),
-            backgroundColor: AppTheme.errorColor,
-          ),
+            backgroundColor: AppTheme.errorColor
+          )
         );
       }
     } catch (error) {
@@ -65,8 +65,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Erro ao enviar e-mail: ${error.toString()}'),
-            backgroundColor: AppTheme.errorColor,
-          ),
+            backgroundColor: AppTheme.errorColor
+          )
         );
       }
     } finally {
@@ -83,16 +83,16 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Redefinir Senha'),
-        centerTitle: true,
+        centerTitle: true
       ),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(24),
-            child: _emailSent ? _buildSuccessView() : _buildFormView(),
-          ),
-        ),
-      ),
+            child: _emailSent ? _buildSuccessView() : _buildFormView()
+          )
+        )
+      )
     );
   }
 
@@ -103,54 +103,48 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Ícone
           Icon(
             Icons.lock_reset,
             size: 80,
-            color: AppTheme.primaryColor,
+            color: AppTheme.primaryColor
           ),
           const SizedBox(height: 24),
           
-          // Título
           Text(
             'Esqueceu sua senha?',
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.bold
             ),
-            textAlign: TextAlign.center,
+            textAlign: TextAlign.center
           ),
           const SizedBox(height: 8),
           
-          // Subtítulo
           Text(
             'Digite seu e-mail para receber um link de redefinição de senha',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: AppTheme.subtitleTextColor,
+              color: AppTheme.subtitleTextColor
             ),
-            textAlign: TextAlign.center,
+            textAlign: TextAlign.center
           ),
           const SizedBox(height: 48),
           
-          // Campo de e-mail
           CustomTextField(
             controller: _emailController,
             label: 'E-mail',
             hint: 'Digite seu e-mail',
             prefixIcon: Icons.email_outlined,
             keyboardType: TextInputType.emailAddress,
-            validator: Validators.validateEmail,
+            validator: Validators.validateEmail
           ),
           const SizedBox(height: 24),
           
-          // Botão de enviar
           CustomButton(
             text: 'Enviar Link',
             isLoading: _isLoading,
-            onPressed: _resetPassword,
+            onPressed: _resetPassword
           ),
           const SizedBox(height: 16),
           
-          // Botão de voltar
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
@@ -159,12 +153,12 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               'Voltar para o login',
               style: TextStyle(
                 color: AppTheme.primaryColor,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ],
-      ),
+                fontWeight: FontWeight.w600
+              )
+            )
+          )
+        ]
+      )
     );
   }
 
@@ -173,42 +167,38 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // Ícone de sucesso
         Icon(
           Icons.check_circle_outline,
           size: 80,
-          color: AppTheme.completedColor,
+          color: AppTheme.completedColor
         ),
         const SizedBox(height: 24),
         
-        // Título
         Text(
           'E-mail enviado!',
           style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.bold
           ),
-          textAlign: TextAlign.center,
+          textAlign: TextAlign.center
         ),
         const SizedBox(height: 8),
         
-        // Mensagem
         Text(
           'Verifique sua caixa de entrada e siga as instruções para redefinir sua senha.',
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-            color: AppTheme.subtitleTextColor,
+            color: AppTheme.subtitleTextColor
           ),
-          textAlign: TextAlign.center,
+          textAlign: TextAlign.center
         ),
         const SizedBox(height: 48),
         
-        // Botão de voltar
         CustomButton(
           text: 'Voltar para o login',
           onPressed: () {
             Navigator.of(context).pushReplacementNamed(AppRoutes.login);
-          },
-        ),
-      ],
+          }
+        )
+      ]
     );
   }
 }
