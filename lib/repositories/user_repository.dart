@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:agpop/models/user_model.dart';
+import 'package:flutter/foundation.dart' show kDebugMode;
 
 class UserRepository {
   final _firestore = FirebaseFirestore.instance;
@@ -10,7 +11,9 @@ class UserRepository {
       final snapshot = await _firestore.collection(_collectionName).get();
       return snapshot.docs.map((doc) => UserModel.fromFirestore(doc)).toList();
     } catch (e) {
-      print('Erro ao buscar os usuários: $e');
+      if (kDebugMode) {
+        print('Erro ao buscar os usuários: $e');
+      }
       throw Exception('Falha ao carregar usuários. Tente novamente.');
     }
   }
@@ -23,7 +26,9 @@ class UserRepository {
           .get();
       return snapshot.docs.map((doc) => UserModel.fromFirestore(doc)).toList();
     } catch (e) {
-      print('Erro ao buscar usuários ativos: $e');
+      if (kDebugMode) {
+        print('Erro ao buscar usuários ativos: $e');
+      }
       throw Exception('Falha ao carregar usuários ativos. Tente novamente.');
     }
   }
@@ -32,7 +37,9 @@ class UserRepository {
     try {
       await _firestore.collection(_collectionName).doc(userId).update(data);
     } catch (e) {
-      print('Erro ao atualizar o usuário $userId: $e');
+      if (kDebugMode) {
+        print('Erro ao atualizar o usuário $userId: $e');
+      }
       throw Exception('Falha ao atualizar o usuário. Verifique a conexão e tente novamente.');
     }
   }
@@ -41,7 +48,9 @@ class UserRepository {
     try {
       await _firestore.collection(_collectionName).add(user.toMap());
     } catch (e) {
-      print('Erro ao adicionar usuário: $e');
+      if (kDebugMode) {
+        print('Erro ao adicionar usuário: $e');
+      }
       throw Exception('Falha ao adicionar usuário. Tente novamente.');
     }
   }
@@ -50,7 +59,9 @@ class UserRepository {
     try {
       await _firestore.collection(_collectionName).doc(userId).delete();
     } catch (e) {
-      print('Erro ao excluir usuário: $e');
+      if (kDebugMode) {
+        print('Erro ao excluir usuário: $e');
+      }
       throw Exception('Falha ao excluir usuário. Tente novamente.');
     }
   }
@@ -60,7 +71,9 @@ class UserRepository {
       final aggregateQuery = await _firestore.collection(_collectionName).count().get();
       return aggregateQuery.count ?? 0;
     } catch (e) {
-      print('Erro ao contar usuários: $e');
+      if (kDebugMode) {
+        print('Erro ao contar usuários: $e');
+      }
       throw Exception('Falha ao contar usuários. Tente novamente.');
     }
   }

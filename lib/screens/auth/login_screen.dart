@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:agpop/main.dart';
 import 'package:agpop/routes.dart';
@@ -68,7 +69,9 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       }
     } catch (error) {
-      print("ErrorOnLogin " + error.toString());
+      if (kDebugMode) {
+        print("ErrorOnLogin $error");
+      }
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -99,46 +102,41 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Logo ou ícone
                   Icon(
                     Icons.task_alt,
                     size: 80,
-                    color: AppTheme.primaryColor,
+                    color: AppTheme.primaryColor
                   ),
                   const SizedBox(height: 24),
                   
-                  // Título
                   Text(
                     'Bem-vindo de volta',
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
-                    textAlign: TextAlign.center,
+                    textAlign: TextAlign.center
                   ),
                   const SizedBox(height: 8),
                   
-                  // Subtítulo
                   Text(
                     'Faça login para acessar suas tarefas',
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: AppTheme.subtitleTextColor,
+                      color: AppTheme.subtitleTextColor
                     ),
-                    textAlign: TextAlign.center,
+                    textAlign: TextAlign.center
                   ),
                   const SizedBox(height: 48),
                   
-                  // Campo de e-mail
                   CustomTextField(
                     controller: _emailController,
                     label: 'E-mail',
                     hint: 'Digite seu e-mail',
                     prefixIcon: Icons.email_outlined,
                     keyboardType: TextInputType.emailAddress,
-                    validator: Validators.validateEmail,
+                    validator: Validators.validateEmail
                   ),
                   const SizedBox(height: 16),
                   
-                  // Campo de senha
                   CustomTextField(
                     controller: _passwordController,
                     label: 'Senha',
@@ -147,19 +145,18 @@ class _LoginScreenState extends State<LoginScreen> {
                     obscureText: _obscurePassword,
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                        _obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined
                       ),
                       onPressed: () {
                         setState(() {
                           _obscurePassword = !_obscurePassword;
                         });
-                      },
+                      }
                     ),
-                    validator: Validators.validatePassword,
+                    validator: Validators.validatePassword
                   ),
                   const SizedBox(height: 16),
                   
-                  // Link para redefinição de senha
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
@@ -170,25 +167,24 @@ class _LoginScreenState extends State<LoginScreen> {
                         'Esqueceu sua senha?',
                         style: TextStyle(
                           color: AppTheme.primaryColor,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
+                          fontWeight: FontWeight.w600
+                        )
+                      )
+                    )
                   ),
                   const SizedBox(height: 24),
                   
-                  // Botão de login
                   CustomButton(
                     text: 'Entrar',
                     isLoading: _isLoading,
-                    onPressed: _signIn,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
+                    onPressed: _signIn
+                  )
+                ]
+              )
+            )
+          )
+        )
+      )
     );
   }
 }

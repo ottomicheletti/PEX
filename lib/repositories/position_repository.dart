@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:agpop/models/position_model.dart';
+import 'package:flutter/foundation.dart' show kDebugMode;
 
 class PositionRepository {
   final _firestore = FirebaseFirestore.instance;
@@ -10,7 +11,9 @@ class PositionRepository {
       final snapshot = await _firestore.collection(_collectionName).get();
       return snapshot.docs.map((doc) => PositionModel.fromFirestore(doc)).toList();
     } catch (e) {
-      print('Erro ao buscar as funções: $e');
+      if (kDebugMode) {
+        print('Erro ao buscar as funções: $e');
+      }
       throw Exception('Falha ao carregar funções. Tente novamente.');
     }
   }
@@ -23,7 +26,9 @@ class PositionRepository {
           .get();
       return snapshot.docs.map((doc) => PositionModel.fromFirestore(doc)).toList();
     } catch (e) {
-      print('Erro ao buscar funções ativas: $e');
+      if (kDebugMode) {
+        print('Erro ao buscar funções ativas: $e');
+      }
       throw Exception('Falha ao carregar funções ativas. Tente novamente.');
     }
   }
@@ -32,7 +37,9 @@ class PositionRepository {
     try {
       await _firestore.collection(_collectionName).doc(positionId).update(data);
     } catch (e) {
-      print('Erro ao atualizar a função $positionId: $e');
+      if (kDebugMode) {
+        print('Erro ao atualizar a função $positionId: $e');
+      }
       throw Exception('Falha ao atualizar a função. Verifique a conexão e tente novamente.');
     }
   }
@@ -41,7 +48,9 @@ class PositionRepository {
     try {
       await _firestore.collection(_collectionName).add(position.toMap());
     } catch (e) {
-      print('Erro ao adicionar função: $e');
+      if (kDebugMode) {
+        print('Erro ao adicionar função: $e');
+      }
       throw Exception('Falha ao adicionar função. Tente novamente.');
     }
   }
@@ -50,7 +59,9 @@ class PositionRepository {
     try {
       await _firestore.collection(_collectionName).doc(positionId).delete();
     } catch (e) {
-      print('Erro ao excluir função: $e');
+      if (kDebugMode) {
+        print('Erro ao excluir função: $e');
+      }
       throw Exception('Falha ao excluir função. Tente novamente.');
     }
   }
@@ -60,7 +71,9 @@ class PositionRepository {
       final aggregateQuery = await _firestore.collection(_collectionName).count().get();
       return aggregateQuery.count ?? 0;
     } catch (e) {
-      print('Erro ao contar funções: $e');
+      if (kDebugMode) {
+        print('Erro ao contar funções: $e');
+      }
       throw Exception('Falha ao contar funções. Tente novamente.');
     }
   }

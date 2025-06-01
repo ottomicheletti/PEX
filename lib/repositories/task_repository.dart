@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:agpop/models/task_model.dart';
-import 'package:agpop/models/user_model.dart';
+import 'package:flutter/foundation.dart' show kDebugMode;
 
 class TaskRepository {
   final _firestore = FirebaseFirestore.instance;
@@ -11,7 +11,9 @@ class TaskRepository {
       final snapshot = await _firestore.collection(_collectionName).get();
       return snapshot.docs.map((doc) => TaskModel.fromFirestore(doc)).toList();
     } catch (e) {
-      print('Erro ao buscar as tarefas: $e');
+      if (kDebugMode) {
+        print('Erro ao buscar as tarefas: $e');
+      }
       throw Exception('Falha ao carregar tarefas. Tente novamente.');
     }
   }
@@ -24,7 +26,9 @@ class TaskRepository {
           .get();
       return snapshot.docs.map((doc) => TaskModel.fromFirestore(doc)).toList();
     } catch (e) {
-      print('Erro ao buscar tarefas ativas: $e');
+      if (kDebugMode) {
+        print('Erro ao buscar tarefas ativas: $e');
+      }
       throw Exception('Falha ao carregar tarefas ativas. Tente novamente.');
     }
   }
@@ -33,7 +37,9 @@ class TaskRepository {
     try {
       await _firestore.collection(_collectionName).doc(userId).update(data);
     } catch (e) {
-      print('Erro ao atualizar a tarefa $userId: $e');
+      if (kDebugMode) {
+        print('Erro ao atualizar a tarefa $userId: $e');
+      }
       throw Exception('Falha ao atualizar a tarefa. Verifique a conexão e tente novamente.');
     }
   }
@@ -42,7 +48,9 @@ class TaskRepository {
     try {
       await _firestore.collection(_collectionName).add(user.toMap());
     } catch (e) {
-      print('Erro ao adicionar tarefa: $e');
+      if (kDebugMode) {
+        print('Erro ao adicionar tarefa: $e');
+      }
       throw Exception('Falha ao adicionar tarefa. Tente novamente.');
     }
   }
@@ -51,7 +59,9 @@ class TaskRepository {
     try {
       await _firestore.collection(_collectionName).doc(userId).delete();
     } catch (e) {
-      print('Erro ao excluir tarefa: $e');
+      if (kDebugMode) {
+        print('Erro ao excluir tarefa: $e');
+      }
       throw Exception('Falha ao excluir tarefa. Tente novamente.');
     }
   }
@@ -61,7 +71,9 @@ class TaskRepository {
       final aggregateQuery = await _firestore.collection(_collectionName).count().get();
       return aggregateQuery.count ?? 0;
     } catch (e) {
-      print('Erro ao contar tarefas: $e');
+      if (kDebugMode) {
+        print('Erro ao contar tarefas: $e');
+      }
       throw Exception('Falha ao contar tarefas. Tente novamente.');
     }
   }
