@@ -3,7 +3,7 @@ name: Build Android APK and Release
 on:
   push:
     branches:
-      - main # Dispara o workflow em pushes para a branch main
+      - main
   workflow_dispatch: # Permite disparar manualmente pela UI do GitHub Actions
 
 jobs:
@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       apk_filename: agpop.apk # Nome final do APK para o release
-      artifact_name: build-artifact-${{ github.run_number }}
+      artifact_name: build-artifact-${{ github.run_number }} # Nome único para o artefato
 
     steps:
       - name: Checkout repository
@@ -81,7 +81,7 @@ jobs:
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ jobs.build_job.outputs.artifact_name }}
+          name: ${{ outputs.artifact_name }}
           path: build/app/outputs/flutter-apk/agpop.apk
           if-no-files-found: error
 
@@ -111,8 +111,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{ github.run_number }}
-          name: Release AGPOP v${{ github.run_number }}
+          tag_name: v${{ github.run_number }} # Cria uma tag como v1, v2, v3...
+          name: Release AGPOP v${{ github.run_number }} # Nome do Release
           body: |
             Release automática do AGPOP - Build #${{ github.run_number }}
             Commit: ${{ github.sha }}
