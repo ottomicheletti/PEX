@@ -6,6 +6,7 @@ import 'package:agpop/theme/app_theme.dart';
 import 'package:agpop/widgets/custom_button.dart';
 import 'package:agpop/widgets/custom_text_field.dart';
 import 'package:agpop/widgets/loading_indicator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class UserFormScreen extends StatefulWidget {
   final UserModel? user;
@@ -23,6 +24,8 @@ class _UserFormScreenState extends State<UserFormScreen> {
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
 
   UserRole _role = UserRole.employee;
   List<String> _selectedPositions = [];
@@ -44,8 +47,10 @@ class _UserFormScreenState extends State<UserFormScreen> {
   void dispose() {
     _nameController.dispose();
     _emailController.dispose();
+    _passwordController.dispose(); // <- adicionado
     super.dispose();
   }
+
 
   Future<void> _submitForm() async {
     if (!_formKey.currentState!.validate()) return;
@@ -54,14 +59,21 @@ class _UserFormScreenState extends State<UserFormScreen> {
 
     try {
       if (widget.user == null) {
+        final authResult = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
+        );
+
         final newUser = UserModel(
-          id: '',
+          id: authResult.user!.uid,
           name: _nameController.text.trim(),
           email: _emailController.text.trim(),
           role: _role,
           isActive: true,
-          positionIds: _selectedPositions
+          positionIds: _selectedPositions,
         );
+
         await _userRepository.add(newUser);
       } else {
         final updatedUser = widget.user!.copyWith(
@@ -138,6 +150,20 @@ class _UserFormScreenState extends State<UserFormScreen> {
                   }
                   return null;
                 }
+              ),
+              CustomTextField(
+                  controller: _passwordController,
+                  label: 'Senha',
+                  hint: 'Senha de acesso',
+                  prefixIcon: Icons.lock_outline,
+                  obscureText: true,
+                  validator: (value) {
+                    if (widget.user == null) {
+                      if (value == null || value.isEmpty) return 'Informe a senha';
+                      if (value.length < 6) return 'A senha deve ter pelo menos 6 caracteres';
+                    }
+                    return null;
+                  }
               ),
               const SizedBox(height: 16),
 

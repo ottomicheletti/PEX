@@ -22,6 +22,7 @@ Future<void> main() async {
 }
 
 final auth = FirebaseAuth.instance;
+final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

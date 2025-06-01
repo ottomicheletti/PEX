@@ -17,11 +17,9 @@ class FirebaseService {
 
   Future<UserModel?> getUserById(String userId) async {
     try {
-      final doc = await usersRef.doc(userId).get();
-      if (doc.exists) {
-        return UserModel.fromFirestore(doc);
-      }
-      return null;
+      final doc = await _firestore.collection('users').doc(userId).get();
+      if (!doc.exists) return null;
+      return UserModel.fromFirestore(doc);
     } catch (e) {
       rethrow;
     }
@@ -150,27 +148,25 @@ class FirebaseService {
 
   Future<List<TaskModel>> getTasksForUser(String userId) async {
     try {
-      final userTasksSnapshot = await taskUsersRef
-          .where('user_id', isEqualTo: userId)
+      final snapshot = await tasksRef
+          .where('assigned_user_ids', arrayContains: userId)
           .get();
-      
-      List<String> taskIds = userTasksSnapshot.docs
-          .map((doc) => doc['task_id'] as String)
-          .toList();
-      
-      if (taskIds.isEmpty) {
-        return [];
-      }
-      
+
       List<TaskModel> tasks = [];
-      
-      for (var taskId in taskIds) {
-        final taskDoc = await tasksRef.doc(taskId).get();
-        if (taskDoc.exists) {
-          tasks.add(TaskModel.fromFirestore(taskDoc));
-        }
+
+      for (var doc in snapshot.docs) {
+        final task = TaskModel.fromFirestore(doc);
+
+        // Aqui você já tem os dados no próprio doc:
+        final assignedUserIds = List<String>.from(doc['assigned_user_ids'] ?? []);
+        final assignedPositionIds = List<String>.from(doc['assigned_position_ids'] ?? []);
+
+        tasks.add(task.copyWith(
+          assignedUserIds: assignedUserIds,
+          assignedPositionIds: assignedPositionIds,
+        ));
       }
-      
+
       return tasks;
     } catch (e) {
       rethrow;
@@ -181,22 +177,9 @@ class FirebaseService {
     try {
       final docRef = await tasksRef.add(task.toMap());
       final taskId = docRef.id;
+
       await tasksRef.doc(taskId).update({'id': taskId});
-      
-      for (var userId in task.assignedUserIds) {
-        await taskUsersRef.add({
-          'task_id': taskId,
-          'user_id': userId
-        });
-      }
-      
-      for (var positionId in task.assignedPositionIds) {
-        await taskPositionsRef.add({
-          'task_id': taskId,
-          'position_id': positionId
-        });
-      }
-      
+
       return taskId;
     } catch (e) {
       rethrow;
@@ -206,40 +189,12 @@ class FirebaseService {
   Future<void> updateTask(TaskModel task) async {
     try {
       await tasksRef.doc(task.id).update(task.toMap());
-      
-      final userTasksSnapshot = await taskUsersRef
-          .where('task_id', isEqualTo: task.id)
-          .get();
-      
-      for (var doc in userTasksSnapshot.docs) {
-        await doc.reference.delete();
-      }
-      
-      for (var userId in task.assignedUserIds) {
-        await taskUsersRef.add({
-          'task_id': task.id,
-          'user_id': userId
-        });
-      }
-      
-      final positionTasksSnapshot = await taskPositionsRef
-          .where('task_id', isEqualTo: task.id)
-          .get();
-      
-      for (var doc in positionTasksSnapshot.docs) {
-        await doc.reference.delete();
-      }
-      
-      for (var positionId in task.assignedPositionIds) {
-        await taskPositionsRef.add({
-          'task_id': task.id,
-          'position_id': positionId
-        });
-      }
+
     } catch (e) {
       rethrow;
     }
   }
+
 
   Future<void> updateTaskStatus(String taskId, TaskStatus status) async {
     try {
