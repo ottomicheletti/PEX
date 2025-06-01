@@ -4,7 +4,7 @@ class Validators {
       return 'Por favor, informe seu e-mail';
     }
     
-    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    final emailRegex = RegExp(r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$');
     if (!emailRegex.hasMatch(value)) {
       return 'Por favor, informe um e-mail válido';
     }
@@ -37,14 +37,12 @@ class Validators {
       return 'Por favor, informe seu CPF';
     }
     
-    // Remover caracteres não numéricos
-    final cpf = value.replaceAll(RegExp(r'[^\d]'), '');
+    final cpf = value.replaceAll(RegExp(r'\D'), '');
     
     if (cpf.length != 11) {
       return 'CPF inválido';
     }
     
-    // Verificar se todos os dígitos são iguais
     if (RegExp(r'^(\d)\1*$').hasMatch(cpf)) {
       return 'CPF inválido';
     }
