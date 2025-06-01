@@ -51,7 +51,7 @@ jobs:
 
           echo "FIREBASE_IOS_API_KEY=${{ secrets.FIREBASE_IOS_API_KEY }}" >> .env
           echo "FIREBASE_IOS_APP_ID=${{ secrets.FIREBASE_IOS_APP_ID }}" >> .env
-          echo "FIREBASE_IOS_MESSAGING_SENDER_ID=${{ secrets.FIREBASE_IOS_MESSAGING_SENDER_ID }}" >> .env
+          echo "FIREBASE_IOS_MESSAGING_SЕРNDER_ID=${{ secrets.FIREBASE_IOS_MESSAGING_SENDER_ID }}" >> .env # Corrigido typo se houver
           echo "FIREBASE_IOS_PROJECT_ID=${{ secrets.FIREBASE_IOS_PROJECT_ID }}" >> .env
           echo "FIREBASE_IOS_STORAGE_BUCKET=${{ secrets.FIREBASE_IOS_STORAGE_BUCKET }}" >> .env
           echo "FIREBASE_IOS_BUNDLE_ID=${{ secrets.FIREBASE_IOS_BUNDLE_ID }}" >> .env
@@ -81,7 +81,7 @@ jobs:
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ outputs.artifact_name }}
+          name: build-artifact-${{ github.run_number }}
           path: build/app/outputs/flutter-apk/agpop.apk
           if-no-files-found: error
 
@@ -111,8 +111,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{ github.run_number }} # Cria uma tag como v1, v2, v3...
-          name: Release AGPOP v${{ github.run_number }} # Nome do Release
+          tag_name: v${{ github.run_number }}
+          name: Release AGPOP v${{ github.run_number }}
           body: |
             Release automática do AGPOP - Build #${{ github.run_number }}
             Commit: ${{ github.sha }}
