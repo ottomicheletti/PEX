@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main # Dispara o workflow em pushes para a branch main
-
+  workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-latest # Usa a última versão estável do Ubuntu como ambiente de execução
