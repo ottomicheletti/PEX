@@ -8,7 +8,7 @@ class UserRepository {
 
   Future<List<UserModel>> getUsers() async {
     try {
-      final snapshot = await _firestore.collection(_collectionName).get();
+      final snapshot = await FirebaseFirestore.instance.collection('users').get();
       return snapshot.docs.map((doc) => UserModel.fromFirestore(doc)).toList();
     } catch (e) {
       if (kDebugMode) {
@@ -46,7 +46,7 @@ class UserRepository {
 
   Future<void> add(UserModel user) async {
     try {
-      await _firestore.collection(_collectionName).add(user.toMap());
+      await _firestore.collection(_collectionName).doc(user.id).set(user.toMap());
     } catch (e) {
       if (kDebugMode) {
         print('Erro ao adicionar usuário: $e');
