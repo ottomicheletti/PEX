@@ -7,19 +7,18 @@ import 'package:agpop/widgets/loading_indicator.dart';
 import 'package:agpop/services/firebase_service.dart';
 import 'package:intl/intl.dart';
 
+final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
+
 class EmployeeHome extends StatefulWidget {
   final UserModel user;
-  
-  const EmployeeHome({
-    super.key,
-    required this.user
-  });
+
+  const EmployeeHome({super.key, required this.user});
 
   @override
   State<EmployeeHome> createState() => _EmployeeHomeState();
 }
 
-class _EmployeeHomeState extends State<EmployeeHome> with SingleTickerProviderStateMixin {
+class _EmployeeHomeState extends State<EmployeeHome> with SingleTickerProviderStateMixin, RouteAware {
   final _firebaseService = FirebaseService();
   late TabController _tabController;
   List<TaskModel> _tasks = [];
@@ -33,15 +32,28 @@ class _EmployeeHomeState extends State<EmployeeHome> with SingleTickerProviderSt
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
   void dispose() {
+    routeObserver.unsubscribe(this);
     _tabController.dispose();
     super.dispose();
   }
 
+  @override
+  void didPopNext() {
+    // Called when the user navigates back to this screen
+    _loadTasks();
+  }
+
   Future<void> _loadTasks() async {
+    setState(() => _isLoading = true);
     try {
       final tasks = await _firebaseService.getTasksForUser(widget.user.id);
-      
       if (mounted) {
         setState(() {
           _tasks = tasks;
@@ -50,15 +62,13 @@ class _EmployeeHomeState extends State<EmployeeHome> with SingleTickerProviderSt
       }
     } catch (error) {
       if (mounted) {
+        setState(() => _isLoading = false);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Erro ao carregar tarefas: ${error.toString()}'),
-            backgroundColor: AppTheme.errorColor
-          )
+            backgroundColor: AppTheme.errorColor,
+          ),
         );
-        setState(() {
-          _isLoading = false;
-        });
       }
     }
   }
@@ -87,20 +97,19 @@ class _EmployeeHomeState extends State<EmployeeHome> with SingleTickerProviderSt
               Text(
                 formattedDate,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: AppTheme.subtitleTextColor
-                )
+                  color: AppTheme.subtitleTextColor,
+                ),
               ),
               const SizedBox(height: 4),
               Text(
                 'Suas tarefas de hoje',
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold
-                )
+                  fontWeight: FontWeight.bold,
+                ),
               )
-            ]
-          )
+            ],
+          ),
         ),
-        
         TabBar(
           controller: _tabController,
           labelColor: AppTheme.primaryColor,
@@ -109,21 +118,20 @@ class _EmployeeHomeState extends State<EmployeeHome> with SingleTickerProviderSt
           tabs: const [
             Tab(text: 'Pendentes'),
             Tab(text: 'Em Andamento'),
-            Tab(text: 'Concluídas')
-          ]
+            Tab(text: 'Concluídas'),
+          ],
         ),
-        
         Expanded(
           child: TabBarView(
             controller: _tabController,
             children: [
               _buildTaskList(_getFilteredTasks(TaskStatus.pending)),
               _buildTaskList(_getFilteredTasks(TaskStatus.started)),
-              _buildTaskList(_getFilteredTasks(TaskStatus.completed))
-            ]
-          )
-        )
-      ]
+              _buildTaskList(_getFilteredTasks(TaskStatus.completed)),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -136,18 +144,18 @@ class _EmployeeHomeState extends State<EmployeeHome> with SingleTickerProviderSt
             Icon(
               Icons.task_alt,
               size: 64,
-              color: AppTheme.subtitleTextColor.withOpacity(0.5)
+              color: AppTheme.subtitleTextColor.withOpacity(0.5),
             ),
             const SizedBox(height: 16),
             Text(
               'Nenhuma tarefa encontrada',
               style: TextStyle(
                 color: AppTheme.subtitleTextColor,
-                fontSize: 16
-              )
-            )
-          ]
-        )
+                fontSize: 16,
+              ),
+            ),
+          ],
+        ),
       );
     }
 
@@ -164,23 +172,21 @@ class _EmployeeHomeState extends State<EmployeeHome> with SingleTickerProviderSt
             onStatusChanged: (newStatus) async {
               try {
                 await _firebaseService.updateTaskStatus(task.id, newStatus);
-                if (mounted) {
-                  _loadTasks();
-                }
+                if (mounted) _loadTasks();
               } catch (error) {
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text('Erro ao atualizar tarefa: ${error.toString()}'),
-                      backgroundColor: AppTheme.errorColor
-                    )
+                      backgroundColor: AppTheme.errorColor,
+                    ),
                   );
                 }
               }
-            }
+            },
           );
-        }
-      )
+        },
+      ),
     );
   }
 }
