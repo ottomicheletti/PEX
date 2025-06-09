@@ -1,3 +1,4 @@
+import 'package:agpop/main.dart';
 import 'package:agpop/models/task_model.dart';
 import 'package:flutter/material.dart';
 import 'package:agpop/models/user_model.dart';
@@ -7,6 +8,7 @@ import 'package:agpop/repositories/user_repository.dart';
 import 'package:agpop/routes.dart';
 import 'package:agpop/theme/app_theme.dart';
 import 'package:agpop/widgets/dashboard_card.dart';
+import 'package:flutter/widgets.dart';
 
 class AdminHome extends StatefulWidget {
   final UserModel user;
@@ -20,7 +22,7 @@ class AdminHome extends StatefulWidget {
   State<AdminHome> createState() => _AdminHomeState();
 }
 
-class _AdminHomeState extends State<AdminHome> {
+class _AdminHomeState extends State<AdminHome> with RouteAware {
 
   final _userRepository = UserRepository();
   final _positionRepository = PositionRepository();
@@ -38,21 +40,36 @@ class _AdminHomeState extends State<AdminHome> {
     _loadDashboardData();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    _loadDashboardData();
+  }
+
   Future<void> _loadDashboardData() async {
     try {
       final userCount = await _userRepository.getCount();
       final positionCount = await _positionRepository.getCount();
       final taskCount = await _taskRepository.getCount();
-      // final positions = await _firebaseService.getAllPositions();
-      // final tasks = await _firebaseService.getAllTasks();
-      // final pendingTasks = await _firebaseService.getAllTasks(status: TaskStatus.pending);
-      
+      final pendingTaskCount = await _taskRepository.getPendingCount();
+
       if (mounted) {
         setState(() {
           _userCount = userCount;
           _positionCount = positionCount;
           _taskCount = taskCount;
-          // _pendingTaskCount = pendingTasks.length;
+          _pendingTaskCount = pendingTaskCount;
           _isLoading = false;
         });
       }
@@ -144,7 +161,6 @@ class _AdminHomeState extends State<AdminHome> {
                     icon: Icons.pending_actions,
                     color: AppTheme.pendingColor,
                     onTap: () {
-                      // Implementar filtro de tarefas pendentes
                       Navigator.of(context).pushNamed(
                         AppRoutes.tasks,
                         arguments: TaskStatus.pending.name
