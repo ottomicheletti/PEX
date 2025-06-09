@@ -46,7 +46,6 @@ class _EmployeeHomeState extends State<EmployeeHome> with SingleTickerProviderSt
 
   @override
   void didPopNext() {
-    // Called when the user navigates back to this screen
     _loadTasks();
   }
 
