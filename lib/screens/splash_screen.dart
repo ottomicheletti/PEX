@@ -40,7 +40,7 @@ class _SplashScreenState extends State<SplashScreen> {
           children: [
             const SizedBox(height: 24),
             Text(
-              'Task Management',
+              'AGPOP',
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                 color: AppTheme.primaryColor,
                 fontWeight: FontWeight.bold,
