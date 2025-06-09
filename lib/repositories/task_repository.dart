@@ -77,4 +77,22 @@ class TaskRepository {
       throw Exception('Falha ao contar tarefas. Tente novamente.');
     }
   }
+
+  Future<int> getPendingCount() async {
+    try {
+      final aggregateQuery = await _firestore
+          .collection(_collectionName)
+          .where('status', isEqualTo: 'pending') // ou TaskStatus.pending.name
+          .count()
+          .get();
+
+      return aggregateQuery.count ?? 0;
+    } catch (e) {
+      if (kDebugMode) {
+        print('Erro ao contar tarefas pendentes: $e');
+      }
+      throw Exception('Falha ao contar tarefas pendentes. Tente novamente.');
+    }
+  }
+
 }
