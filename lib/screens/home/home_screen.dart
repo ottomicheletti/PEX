@@ -118,12 +118,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             itemBuilder: (context) => [
               PopupMenuItem(
-                child: const Text('Meu Perfil'),
-                onTap: () {
-                  // Implementar visualização de perfil
-                }
-              ),
-              PopupMenuItem(
                 onTap: _signOut,
                 child: const Text('Sair')
               )
